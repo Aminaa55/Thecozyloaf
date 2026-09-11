@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Cozy Loaf</title>
 <meta name="description" content="The Cozy Loaf — sourdough, delivered in Cairo.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -151,8 +151,23 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
    leave the disc at its full desktop 29rem on a phone, which is what made the
    composition balloon. min() cannot fail to match. */
 .medallion{
-  --disc:min(63vw,29rem);
+  --disc:min(58vw,29rem);
   position:relative;width:min(100%,var(--disc));margin-inline:auto;aspect-ratio:1;
+}
+/* The ring stands 21% outside the disc, so the composition as a whole measures
+   1.42 x --disc: 58vw of disc puts the ring, the loaf and the badge together at
+   82vw. Width is the only input — there is no height term here, so a browser
+   toolbar cannot change the size, only how much room is left around it.
+
+   That second point is the one that matters on a handset: a phone showing
+   browser chrome leaves roughly 700css px of height where a desktop window
+   leaves 900, so the same composition fills far more of the screen. The cap
+   below keeps it from dominating a short viewport. svh is the *smallest*
+   viewport height — toolbars shown — so unlike dvh it does not resize as they
+   hide and reveal on scroll. It is behind @supports because an unknown unit
+   inside min() would invalidate the whole declaration. */
+@supports (width: 1svh){
+  .medallion{--disc:min(58vw,30svh,29rem)}
 }
 @supports not (aspect-ratio:1){
   .medallion::before{content:"";display:block;padding-top:100%}
