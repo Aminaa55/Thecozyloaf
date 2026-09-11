@@ -142,6 +142,18 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 
 /* photo medallion */
 .medallion{position:relative;width:min(100%,29rem);margin-inline:auto;aspect-ratio:1}
+/* The ring is drawn 21% outside the medallion, so it occupies 1.42x the
+   medallion's width. Once the medallion fills the column the ring runs off
+   both edges and the wording is clipped. Below the width where a full-size
+   ring still fits, size the medallion from the viewport instead so the whole
+   ring lands on screen. 66vw x 1.42 = 94vw, leaving a margin either side.
+   The ring, its rotation and the price badge keep their proportions. */
+@media (max-width:44rem){
+  .medallion{width:min(100%,63vw)}
+  /* The ring also reaches below the medallion, and the hero clips its
+     overflow, so the wording needs room under it as well as beside it. */
+  .hero{padding-bottom:clamp(3.5rem,18vw,9rem)}
+}
 /* The ring is decorative and sits 21% outside the medallion, which on a
    phone reaches up over the hero buttons and swallows their taps. */
 .medallion__ring{position:absolute;inset:-21%;animation:spin 38s linear infinite;pointer-events:none}
