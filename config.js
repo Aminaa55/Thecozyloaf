@@ -83,14 +83,19 @@ window.COZY_CONFIG = {
      the bakery's problem, never theirs. Failures are logged to the
      console for a developer and never shown on screen.
 
-     REMEMBER: add the live site's address under Account → Security →
-     allowed origins in EmailJS, or sends from the deployed site are
-     rejected. */
+     These four values are public by design — EmailJS is called from
+     the browser, so anyone can read them in the deployed page. That
+     is inherent to sending without a server, not an oversight.
+
+     Origin restriction is a paid EmailJS feature and is deliberately
+     not in use, so the only protection is the monthly send quota. If
+     the quota ever drains without matching orders, rotate the public
+     key in the EmailJS dashboard and update it here. */
   emailjs: {
-    publicKey: "",
-    serviceId: "",
-    customerTemplateId: "",
-    ownerTemplateId: "",
+    publicKey: "GKOYIUK2pM4YBI010",
+    serviceId: "service_zhnqrif",
+    customerTemplateId: "template_ouikh4b",
+    ownerTemplateId: "template_k20t6sh",
 
     /* How long to wait for both emails before letting the customer
        through to their confirmation. The order is already saved, so
