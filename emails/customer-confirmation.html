@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your order is confirmed</title>
+</head>
+<!--
+  THE COZY LOAF — customer confirmation email
+
+  Brand colours, table layout, inline styles, web-safe fonts only. Fraunces and
+  Figtree do not render in most email clients, so the display role falls to
+  Georgia and the text role to Arial, which sit closest to them.
+
+  Paste this whole file into the EmailJS template editor, in Code view.
+
+  Merge fields:
+    {{first_name}} {{order_number}} {{items_text}} {{subtotal}}
+
+  {{items_text}} arrives as plain text, one loaf per line:
+    2 × Plain Sourdough  —  EGP 460
+    1 × Black Olive Sourdough  —  EGP 250
+  It is deliberately not HTML: EmailJS escapes markup inside variables,
+  so a table built in code would print its own tags. The block below
+  keeps the line breaks with white-space:pre-line instead.
+-->
+<body style="margin:0;padding:0;background:#FEFAF0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FEFAF0;">
+<tr><td align="center" style="padding:28px 14px;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
+
+    <!-- crust bar -->
+    <tr><td style="background:#A13A1E;height:10px;line-height:10px;font-size:0;border-radius:14px 14px 0 0;">&nbsp;</td></tr>
+
+    <!-- header -->
+    <tr><td align="center" style="background:#88B8CE;padding:34px 28px 30px;border-left:3px solid #542916;border-right:3px solid #542916;">
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:32px;line-height:1.15;color:#542916;font-weight:bold;">
+        Your order is confirmed &#127838;
+      </div>
+    </td></tr>
+
+    <!-- body -->
+    <tr><td style="background:#FEFAF0;padding:30px 28px 8px;border-left:3px solid #542916;border-right:3px solid #542916;">
+      <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#542916;">
+        Hi {{first_name}},
+      </p>
+      <p style="margin:0 0 24px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#7A4426;">
+        We&rsquo;ve received your order from The Cozy Loaf.
+      </p>
+
+      <!-- order number -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 22px;">
+        <tr><td style="background:#F1C166;border:3px solid #542916;border-radius:99px;padding:7px 18px;
+                       font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:bold;color:#542916;">
+          Order #{{order_number}}
+        </td></tr>
+      </table>
+    </td></tr>
+
+    <!-- items -->
+    <tr><td style="background:#FEFAF0;padding:0 28px;border-left:3px solid #542916;border-right:3px solid #542916;">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:2;color:#542916;
+                  border-top:2px dashed #B79858;padding-top:12px;white-space:pre-line;">{{items_text}}</div>
+    </td></tr>
+
+    <!-- totals -->
+    <tr><td style="background:#FEFAF0;padding:14px 28px 26px;border-left:3px solid #542916;border-right:3px solid #542916;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+             style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#542916;border-top:2px dashed #B79858;">
+        <tr>
+          <td style="padding:12px 0 4px;">Subtotal</td>
+          <td align="right" style="padding:12px 0 4px;font-weight:bold;">EGP {{subtotal}}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;color:#7A4426;">Delivery</td>
+          <td align="right" style="padding:4px 0;font-weight:bold;">Within 48 hours</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;color:#7A4426;">Delivery fee</td>
+          <td align="right" style="padding:4px 0;color:#7A4426;">Confirmed separately</td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- closing -->
+    <tr><td style="background:#FBEBC8;padding:24px 28px;border-left:3px solid #542916;border-right:3px solid #542916;">
+      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#542916;">
+        We&rsquo;ll contact you if we need anything else regarding your order.
+      </p>
+    </td></tr>
+
+    <!-- signoff -->
+    <tr><td align="center" style="background:#542916;padding:26px 28px 28px;border-radius:0 0 14px 14px;">
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:19px;font-style:italic;color:#F1C166;line-height:1.4;">
+        Warm from the oven, soon to you.
+      </div>
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#FEFAF0;padding-top:8px;">
+        The Cozy Loaf
+      </div>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#D9EAF2;padding-top:14px;">
+        Delivery across the areas listed at checkout &middot;
+        <a href="https://instagram.com/thecozyloaf_eg" style="color:#F1C166;text-decoration:none;">@thecozyloaf_eg</a>
+      </div>
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>

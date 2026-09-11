@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order received — The Cozy Loaf</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Figtree:ital,wght@0,300..900;1,400..600&family=Caveat:wght@400..700&display=swap">
+<style>
+
+/* ═══════════════════════════════════════════════════════════════
+   THE COZY LOAF
+   Palette as supplied: espresso, olive, terracotta, porcelain blue,
+   milky off-white, golden yellow. Blue / gold / terracotta lead;
+   espresso is ink and outline; olive is detail only, never a ground.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --espresso:#542916;
+  --espresso-2:#7A4426;
+  --olive:#B79858;
+  --olive-pale:#EFE3C9;
+  --terracotta:#A13A1E;
+  --terracotta-pale:#F0D2C6;
+  --blue:#88B8CE;
+  --blue-pale:#D9EAF2;
+  --blue-deep:#356F8B;
+  --milk:#FEFAF0;
+  --gold:#F1C166;
+  --gold-pale:#FBEBC8;
+
+  --display:"Fraunces","Hoefler Text",Georgia,serif;
+  --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --hand:"Caveat","Bradley Hand",cursive;
+  --wonky:"SOFT" 40,"WONK" 1;
+
+  --gut:clamp(1.25rem,5vw,4rem);
+  --maxw:82rem;
+  --pop:cubic-bezier(.22,1.2,.36,1);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--milk);color:var(--espresso);
+  font-family:var(--ui);font-size:1.0625rem;line-height:1.6;overflow-x:hidden;
+}
+::selection{background:var(--terracotta);color:var(--milk)}
+a{color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:3px solid var(--terracotta);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:1rem;top:1rem;z-index:200;background:var(--terracotta);color:var(--milk);padding:.7rem 1rem;border-radius:99px;font-weight:700}
+
+h1,h2,h3{
+  font-family:var(--display);font-variation-settings:var(--wonky);
+  font-weight:600;line-height:.95;letter-spacing:-.02em;margin:0;text-wrap:balance;
+}
+.ital{font-style:italic;font-variation-settings:"SOFT" 80,"WONK" 1}
+.hand{font-family:var(--hand);font-weight:600;line-height:1.2}
+
+/* editor-only marker for copy still to be supplied */
+.ph-tag{
+  display:inline-flex;align-items:center;gap:.3rem;font-family:var(--hand);font-size:1.1rem;
+  color:var(--terracotta);transform:rotate(-3deg);white-space:nowrap;
+}
+.ph-tag::before{content:"✎"}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn{
+  --bg:var(--terracotta);--fg:var(--milk);
+  display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
+  font-family:var(--ui);font-weight:800;font-size:.95rem;
+  padding:.95rem 1.6rem;border:3px solid var(--espresso);border-radius:99px;
+  background:var(--bg);color:var(--fg);text-decoration:none;cursor:pointer;
+  box-shadow:4px 4px 0 var(--espresso);
+  transition:transform .16s var(--pop), box-shadow .16s var(--pop), background .2s;
+}
+.btn:hover{transform:translate(-2px,-2px) rotate(-1.5deg);box-shadow:7px 7px 0 var(--espresso)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--espresso)}
+.btn .arr{transition:transform .25s var(--pop)}
+.btn:hover .arr{transform:translateX(5px) rotate(12deg)}
+.btn--gold{--bg:var(--gold);--fg:var(--espresso)}
+.btn--milk{--bg:var(--milk);--fg:var(--espresso)}
+.btn--blue{--bg:var(--blue);--fg:var(--espresso)}
+.btn--sm{padding:.6rem 1.1rem;font-size:.85rem;border-width:2px;box-shadow:3px 3px 0 var(--espresso)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--espresso)}
+
+/* ── Ticker & marquee ────────────────────────────────────────── */
+.ticker{background:var(--terracotta);color:var(--milk);overflow:hidden;border-bottom:3px solid var(--espresso);padding-block:.5rem}
+.ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
+.ticker span{font-family:var(--ui);font-weight:800;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding-inline:1.2rem;white-space:nowrap}
+@keyframes slide{to{transform:translateX(-50%)}}
+.band{background:var(--espresso);color:var(--gold);overflow:hidden;padding-block:1.3rem}
+.band .ticker__track{animation-duration:38s}
+.band span{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;text-transform:none;padding-inline:1.4rem}
+
+/* ── Nav ─────────────────────────────────────────────────────── */
+.nav{position:sticky;top:0;z-index:100;background:var(--gold);border-bottom:3px solid var(--espresso)}
+.nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
+.brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
+.brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--espresso);object-fit:cover;background:var(--milk)}
+.brand img[hidden]{display:none}
+.brand b{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.35rem;letter-spacing:-.02em}
+.nav__links{display:none;gap:1.6rem}
+@media (min-width:52rem){.nav__links{display:flex}}
+.nav__links a{font-weight:700;font-size:.95rem;text-decoration:none;position:relative;padding-block:.2rem}
+.nav__links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:3px;background:var(--terracotta);border-radius:3px;transition:right .25s var(--pop)}
+.nav__links a:hover::after{right:0}
+
+/* ── Section grounds ─────────────────────────────────────────── */
+section{position:relative}
+.pad{padding-block:clamp(3.5rem,8vw,6.5rem)}
+.g-blue{background:var(--blue)}
+.g-milk{background:var(--milk)}
+.g-gold{background:var(--gold)}
+.g-blue-pale{background:var(--blue-pale)}
+.wave{display:block;width:100%;height:42px}
+.kicker{
+  display:inline-flex;align-items:center;font-weight:800;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--terracotta);
+  background:var(--milk);border:2.5px solid var(--espresso);border-radius:99px;padding:.4rem 1rem;
+  transform:rotate(-2deg);box-shadow:3px 3px 0 var(--espresso);
+}
+
+
+/* ── Confirmation ────────────────────────────────────────────── */
+.conf{padding-block:clamp(3rem,8vw,5.5rem)}
+.conf__head{text-align:center;max-width:44rem;margin-inline:auto}
+.conf__mark{width:5.5rem;height:5.5rem;border-radius:50%;margin:0 auto 1.5rem;
+  border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
+.conf__mark[hidden]{display:none}
+.conf h1{font-size:clamp(2.4rem,7vw,4.4rem)}
+.conf h1 .ital{color:var(--terracotta)}
+.conf__ref{display:inline-block;margin-top:1.3rem;padding:.4rem 1.3rem;
+  font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.4rem;
+  background:var(--blue);border:3px solid var(--espresso);border-radius:99px;
+  box-shadow:4px 4px 0 var(--espresso);transform:rotate(-1.5deg)}
+.conf__msg{margin:1.5rem auto 0;max-width:36rem;font-size:1.08rem;line-height:1.65;color:var(--espresso-2)}
+.conf__promise{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.3rem;padding:.7rem 1.4rem;
+  font-family:var(--ui);font-weight:700;font-size:1.02rem;
+  background:var(--blue-pale);color:var(--espresso);border:3px solid var(--espresso);border-radius:99px;
+  box-shadow:4px 4px 0 var(--espresso)}
+.conf__promise b{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.25rem;color:var(--terracotta)}
+
+.card{max-width:44rem;margin:clamp(2.5rem,5vw,3.5rem) auto 0;background:var(--milk);
+  border:4px solid var(--espresso);border-radius:1.8rem;box-shadow:8px 9px 0 var(--espresso);overflow:hidden}
+.card__sec{padding:1.5rem clamp(1.3rem,4vw,2rem)}
+.card__sec + .card__sec{border-top:3px dashed var(--espresso)}
+.card__sec h2{font-family:var(--ui);font-size:.76rem;font-weight:800;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--terracotta);margin:0 0 1rem}
+.rows{display:grid;gap:.7rem;margin:0}
+.rows div{display:flex;justify-content:space-between;gap:1.5rem;align-items:baseline}
+.rows dt{margin:0;font-weight:600;color:var(--espresso-2)}
+.rows dd{margin:0;font-weight:700;text-align:right}
+.rows dd.wrap-any{overflow-wrap:anywhere}
+.rows .muted dd{font-weight:600;color:var(--espresso-2)}
+.rows .item dt{font-weight:700;color:var(--espresso)}
+.rows .tot{border-top:2px dashed var(--espresso);padding-top:.7rem;margin-top:.2rem}
+.rows .tot dt,.rows .tot dd{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem;color:var(--espresso)}
+.card__sec--gold{background:var(--gold-pale)}
+.conf__cta{display:flex;flex-wrap:wrap;gap:.85rem;justify-content:center;margin-top:clamp(2rem,4vw,2.75rem)}
+.empty{max-width:34rem;margin-inline:auto;text-align:center}
+.empty h1{font-size:clamp(2rem,6vw,3.2rem)}
+.empty p{color:var(--espresso-2);margin-top:1rem}
+/* ── Reveal — page renders at rest, JS opts elements in ──────── */
+[data-reveal="pending"]{opacity:0}
+[data-reveal="pending"][data-from="up"]{transform:translateY(46px)}
+[data-reveal="pending"][data-from="left"]{transform:translateX(-64px) rotate(-3deg)}
+[data-reveal="pending"][data-from="right"]{transform:translateX(64px) rotate(3deg)}
+[data-reveal="pending"][data-from="pop"]{transform:scale(.86) rotate(-4deg)}
+[data-reveal="in"]{opacity:1;transform:none;transition:opacity .75s var(--pop), transform .85s var(--pop)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  [data-reveal]{opacity:1 !important;transform:none !important}
+  .medallion__ring,.ticker__track{animation:none !important}
+}
+
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-hidden="true"><div class="ticker__track" id="conf-ticker"></div></div>
+
+<nav class="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="index.html">
+      <img alt="" data-logo>
+      <b>The Cozy Loaf</b>
+    </a>
+  </div>
+</nav>
+
+<main class="conf">
+  <div class="wrap">
+
+    <div id="found" hidden>
+      <div class="conf__head">
+        <img class="conf__mark" alt="" data-logo>
+        <h1>Order <span class="ital">received</span></h1>
+        <p><span class="conf__ref" id="ref"></span></p>
+        <p><span class="conf__promise" id="promise"></span></p>
+      </div>
+
+      <div class="card">
+        <div class="card__sec">
+          <h2>Your loaves</h2>
+          <dl class="rows" id="items"></dl>
+        </div>
+        <div class="card__sec card__sec--gold">
+          <h2>Totals</h2>
+          <dl class="rows" id="totals"></dl>
+        </div>
+        <div class="card__sec">
+          <h2>Delivery</h2>
+          <dl class="rows" id="delivery"></dl>
+        </div>
+      </div>
+
+      <div class="conf__cta">
+        <a class="btn" href="index.html" id="again">Back to home</a>
+      </div>
+    </div>
+
+    <div id="missing" class="empty" hidden>
+      <h1>We could not find that order</h1>
+      <p>The confirmation for an order is only shown once, right after it is placed.</p>
+      <div class="conf__cta"><a class="btn btn--gold" href="index.html">Back to home</a></div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <h2>Slow rise, <span class="ital">warm heart.</span></h2>
+    <p>Delivery across the areas listed at checkout &middot; <a href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script>
+window.renderConfirmation = function () {
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const egp = n => "EGP " + Number(n).toLocaleString("en-US");
+
+  $$("[data-logo]").forEach(img => window.cozyImage(img, "assets/logo", () => { img.hidden = true; }));
+
+  const once = "<span>The Cozy Loaf \u2726 Slow rise, warm heart \u2726</span>";
+  $("#conf-ticker").innerHTML = once.repeat(8);
+
+  /* The order was handed over in sessionStorage; the URL names it. */
+  let order = null;
+  try { order = JSON.parse(sessionStorage.getItem("cozyloaf.lastOrder") || "null"); } catch (e) {}
+  const want = new URLSearchParams(location.search).get("ref");
+  if (order && want && order.reference !== want) order = null;
+
+  if (!order) { $("#missing").hidden = false; return; }
+
+  $("#found").hidden = false;
+  document.title = "Order " + order.reference + " — The Cozy Loaf";
+  $("#ref").textContent = order.reference;
+
+  $("#items").innerHTML = order.items.map(i =>
+    '<div class="item"><dt>' + i.quantity + " \u00d7 " + esc(i.name) + "</dt><dd>" + egp(i.lineTotal) + "</dd></div>").join("");
+
+  $("#totals").innerHTML =
+    "<div><dt>Subtotal</dt><dd>" + egp(order.subtotal) + "</dd></div>" +
+    '<div class="muted"><dt>Delivery fee</dt><dd>To be confirmed</dd></div>' +
+    '<div class="tot"><dt>Total before delivery</dt><dd>' + egp(order.totalBeforeDelivery) + "</dd></div>";
+
+  $("#delivery").innerHTML = [
+    ["Name", order.customer.fullName],
+    ["Address", order.customer.address],
+    ["Area", order.customer.area]
+  ].map(r => '<div><dt>' + esc(r[0]) + '</dt><dd class="wrap-any">' + esc(r[1]) + "</dd></div>").join("");
+
+  $("#promise").textContent = (window.COZY_CONFIG || {}).deliveryPromise || "";
+
+  /* Leaving this page must not leave a stale order behind. */
+  $("#again").addEventListener("click", () => {
+    try { sessionStorage.removeItem("cozyloaf.lastOrder"); } catch (e) {}
+  });
+};
+
+/* Standalone page runs itself. When this markup is inlined into the shop page
+   for a single-file preview, the shop calls it instead. */
+if (!document.getElementById("confirm-screen")) window.renderConfirmation();
+</script>
+</body>
+</html>
