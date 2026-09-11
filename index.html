@@ -89,9 +89,7 @@ h1,h2,h3{
 .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--espresso)}
 
 /* ── Ticker & marquee ────────────────────────────────────────── */
-.ticker{background:var(--terracotta);color:var(--milk);overflow:hidden;border-bottom:3px solid var(--espresso);padding-block:.5rem}
 .ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
-.ticker span{font-family:var(--ui);font-weight:800;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding-inline:1.2rem;white-space:nowrap}
 @keyframes slide{to{transform:translateX(-50%)}}
 .band{background:var(--espresso);color:var(--gold);overflow:hidden;padding-block:1.3rem}
 .band .ticker__track{animation-duration:38s}
@@ -129,92 +127,57 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   transform:rotate(-2deg);box-shadow:3px 3px 0 var(--espresso);
 }
 
-/* ── Hero ────────────────────────────────────────────────────── */
-.hero{background:var(--blue);overflow:hidden;padding-block:clamp(2.5rem,6vw,4.5rem) clamp(3rem,7vw,5rem)}
-.hero__in{display:grid;gap:clamp(2.5rem,5vw,3.5rem);align-items:center}
-@media (min-width:62rem){.hero__in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
-.hero__logo{width:clamp(7rem,14vw,11rem);height:clamp(7rem,14vw,11rem);border-radius:50%;
-  border:4px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:7px 8px 0 var(--espresso);margin-bottom:1.6rem}
+/* ── Hero ───────────────────────────────────────────────────────
+   Built for a phone first: one column, each piece stacked, nothing
+   sized from a square. Desktop rearranges the same three pieces. */
+.hero{background:var(--blue);overflow:hidden;padding-block:clamp(1.5rem,5vw,3.5rem) clamp(1.75rem,5vw,3.5rem)}
+.hero__in{display:grid;gap:clamp(1rem,3.5vw,1.6rem)}
+.hero__logo{width:clamp(4.5rem,16vw,7rem);height:clamp(4.5rem,16vw,7rem);border-radius:50%;
+  border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
 .hero__logo[hidden]{display:none}
-.wordmark{font-size:clamp(3rem,9.5vw,6.6rem);letter-spacing:-.04em;line-height:.88}
+.wordmark{font-size:clamp(2.6rem,13vw,4.4rem);line-height:.94;letter-spacing:-.03em}
 .wordmark .ital{color:var(--terracotta)}
-.hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2.2rem}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.7rem}
+.hero__cta .btn{flex:1 1 auto}
+/* a short screen gets a smaller wordmark so the buttons stay above the fold */
+@media (max-height:600px){ .wordmark{font-size:clamp(2.1rem,10vw,3rem)} }
 
-/* photo medallion */
-/* --disc is the disc's diameter, and every part of the composition is a
-   fraction of it: the ring's overhang, the space above and below, the price
-   badge. It is a pure length (no percentages), so descendants resolve it to
-   the same value the disc itself used.
+/* the loaf and the strip beneath it read as one framed object */
+.stage{position:relative;width:100%;min-width:0}
+.loafcard{margin:0;border:4px solid var(--espresso);border-radius:1.6rem;overflow:hidden;
+  background:#0c0d11;box-shadow:7px 8px 0 rgba(84,41,22,.22);will-change:transform}
+.loafcard__img{position:relative;aspect-ratio:6/5;overflow:hidden}
+.loafcard__img img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
+.loafcard__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:1.5rem;
+  background:radial-gradient(80% 70% at 50% 35%, var(--gold-pale), var(--blue-pale))}
+.loafcard[data-empty="true"] img{display:none}
+.loafcard[data-empty="true"] .loafcard__fb{display:grid}
+.loafcard__fb p{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.4rem;margin:0;line-height:1.1}
+.loafcard__fb small{display:block;font-family:var(--hand);font-size:1.1rem;color:var(--terracotta);margin-top:.5rem}
+.loafcard__strip{background:var(--espresso);overflow:hidden;padding-block:.5rem}
+.loafcard__strip .ticker__track{animation-duration:22s}
+.loafcard__strip span{font-family:var(--ui);font-weight:800;font-size:.74rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);padding-inline:.9rem;white-space:nowrap}
 
-   The cap is expressed here rather than in a media query. A breakpoint that
-   fails to match — and a real device can differ from an emulator — used to
-   leave the disc at its full desktop 29rem on a phone, which is what made the
-   composition balloon. min() cannot fail to match. */
-.medallion{
-  --disc:min(58vw,29rem);
-  position:relative;width:min(100%,var(--disc));margin-inline:auto;aspect-ratio:1;
-}
-/* The ring stands 21% outside the disc, so the composition as a whole measures
-   1.42 x --disc: 58vw of disc puts the ring, the loaf and the badge together at
-   82vw. Width is the only input — there is no height term here, so a browser
-   toolbar cannot change the size, only how much room is left around it.
+.tag{position:absolute;right:-.35rem;bottom:3.1rem;z-index:3;display:grid;place-content:center;text-align:center;
+  width:clamp(4.6rem,14vw,5.6rem);aspect-ratio:1;border-radius:50%;
+  background:var(--terracotta);color:var(--milk);border:3px solid var(--espresso);
+  box-shadow:4px 5px 0 var(--espresso);transform:rotate(-11deg)}
+.tag i{display:block;font-style:normal;font-size:.58rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;opacity:.92}
+.tag b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.5rem;line-height:1}
+.tag u{display:block;text-decoration:none;font-size:.58rem;font-weight:800;letter-spacing:.16em}
 
-   That second point is the one that matters on a handset: a phone showing
-   browser chrome leaves roughly 700css px of height where a desktop window
-   leaves 900, so the same composition fills far more of the screen. The cap
-   below keeps it from dominating a short viewport. svh is the *smallest*
-   viewport height — toolbars shown — so unlike dvh it does not resize as they
-   hide and reveal on scroll. It is behind @supports because an unknown unit
-   inside min() would invalidate the whole declaration. */
-@media (max-width:61.99rem){
-  @supports (width: 1svh){
-    .medallion{--disc:min(58vw,30svh,29rem)}
-  }
-}
-@supports not (aspect-ratio:1){
-  .medallion::before{content:"";display:block;padding-top:100%}
-}
-/* The ring is drawn 21% outside the medallion, so it occupies 1.42x the
-   medallion's width. Once the medallion fills the column the ring runs off
-   both edges and the wording is clipped. Below the width where a full-size
-   ring still fits, size the medallion from the viewport instead so the whole
-   ring lands on screen. 66vw x 1.42 = 94vw, leaving a margin either side.
-   The ring, its rotation and the price badge keep their proportions. */
-/* While the hero is a single column the ring sits above and below the disc, so
-   the composition reserves room for it in proportion to the disc — the same
-   ratio at every width, no per-device tuning. Above 62rem the hero is two
-   columns and desktop keeps exactly what it had. */
-@media (max-width:61.99rem){
-  .medallion{margin-block:calc(var(--disc) * .20) calc(var(--disc) * .18)}
-  .sticker--price{width:calc(var(--disc) * .34);height:calc(var(--disc) * .34)}
-  .sticker--price b{font-size:calc(var(--disc) * .075)}
-  .sticker--price span{font-size:calc(var(--disc) * .027)}
-}
-
-/* The ring is decorative and sits 21% outside the medallion, which on a
-   phone reaches up over the hero buttons and swallows their taps. */
-.medallion__ring{position:absolute;inset:-21%;animation:spin 38s linear infinite;pointer-events:none}
-.medallion__ring text{font-family:var(--ui);font-weight:800;font-size:6.6px;letter-spacing:.3em;fill:var(--espresso);text-transform:uppercase}
-@keyframes spin{to{transform:rotate(360deg)}}
-.medallion__disc{position:absolute;inset:0;border-radius:50%;overflow:hidden;
-  border:4px solid var(--espresso);background:var(--gold-pale);box-shadow:12px 14px 0 rgba(84,41,22,.22)}
-.medallion__disc img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
-.medallion__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
-  background:radial-gradient(85% 70% at 50% 32%, var(--gold-pale), var(--blue-pale))}
-.medallion[data-empty="true"] img{display:none}
-.medallion[data-empty="true"] .medallion__fb{display:grid}
-.medallion__fb p{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.5rem;margin:0;line-height:1.1}
-.medallion__fb small{display:block;font-family:var(--hand);font-size:1.15rem;color:var(--terracotta);margin-top:.6rem}
-
-.sticker{position:absolute;z-index:5;display:grid;place-content:center;text-align:center;
-  border:3px solid var(--espresso);border-radius:50%;box-shadow:4px 5px 0 var(--espresso)}
-.sticker--price{width:7.4rem;height:7.4rem;background:var(--terracotta);color:var(--milk);right:-9%;bottom:-2%;transform:rotate(-13deg)}
-.sticker--price b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.85rem;line-height:1}
-.sticker--price span{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-@media (max-width:40rem){
-  /* Only the horizontal nudge; the badge's size comes from --disc above, so a
-     fixed rem size here would undo it on the narrowest screens. */
-  .sticker--price{right:-4%}
+/* Desktop adapts from this: the same three pieces, two columns. */
+@media (min-width:62rem){
+  .hero__in{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+    grid-template-areas:"logo stage" "word stage" "cta stage";
+    align-items:center;column-gap:clamp(2rem,5vw,4rem);row-gap:1.25rem}
+  .hero__logo{grid-area:logo;align-self:end}
+  .wordmark{grid-area:word}
+  .stage{grid-area:stage}
+  .hero__cta{grid-area:cta;align-self:start}
+  .hero__cta .btn{flex:0 0 auto}
+  .loafcard__img{aspect-ratio:5/4}
 }
 
 /* ── Loaves ──────────────────────────────────────────────────── */
@@ -385,7 +348,6 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   .btn--sm{min-height:44px}
   .brand{padding-block:.35rem}
   .foot a{display:inline-block;padding:.55rem .2rem}
-  .ticker span{font-size:.82rem}
   .nav__links a{padding-block:.55rem}
 }
 
@@ -393,14 +355,12 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
   [data-reveal]{opacity:1 !important;transform:none !important}
-  .medallion__ring,.ticker__track{animation:none !important}
+  .ticker__track{animation:none !important}
 }
 </style>
 </head>
 <body>
 <a class="skip" href="#order">Skip to ordering</a>
-
-<div class="ticker" aria-hidden="true"><div class="ticker__track" id="ticker"></div></div>
 
 <nav class="nav">
   <div class="wrap nav__in">
@@ -421,34 +381,23 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 <!-- ══ HERO ═══════════════════════════════════════════════════ -->
 <section class="hero">
   <div class="wrap hero__in">
-    <div>
-      <img class="hero__logo" alt="The Cozy Loaf" data-logo data-reveal data-from="pop">
-      <h1 class="wordmark">The <span class="ital">Cozy</span><br>Loaf</h1>
-      <div class="hero__cta">
-        <a class="btn" href="#order" data-reveal data-from="up">Order now <span class="arr">→</span></a>
-        <a class="btn btn--milk" href="#loaves" data-reveal data-from="up">See the loaves</a>
-      </div>
+    <img class="hero__logo" alt="The Cozy Loaf" data-logo>
+    <h1 class="wordmark">The <span class="ital">Cozy</span><br>Loaf</h1>
+
+    <div class="stage">
+      <figure class="loafcard" data-loafcard data-empty="false" data-float="0.05">
+        <div class="loafcard__img">
+          <img alt="Plain Sourdough, golden crackly crust." data-hero-photo>
+          <div class="loafcard__fb"><div><p>Plain Sourdough</p><small>photo goes here</small></div></div>
+        </div>
+        <div class="loafcard__strip" aria-hidden="true"><div class="ticker__track" id="strip"></div></div>
+      </figure>
+      <div class="tag"><i>from</i><b>230</b><u>EGP</u></div>
     </div>
 
-    <div style="position:relative" data-float="0.06">
-      <div class="medallion" data-medallion data-empty="false">
-        <svg class="medallion__ring" viewBox="0 0 100 100" aria-hidden="true">
-          <defs><path id="ring" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs>
-          <!-- textLength pins the wording to the circle's exact circumference (2πr,
-     r=43) and lengthAdjust spreads the difference across the spacing, so the
-     ring closes in any font. Without it a textPath draws its string once at
-     the font's natural width: a narrower face than the one measured against
-     leaves the rest of the circle simply blank. -->
-          <text><textPath href="#ring" textLength="270" lengthAdjust="spacing">slow rise ✦ warm heart ✦ slow rise ✦ warm heart ✦</textPath></text>
-        </svg>
-        <div class="medallion__disc">
-          <img alt="Plain Sourdough, golden crackly crust." data-hero-photo>
-          <div class="medallion__fb">
-            <div><p>Plain Sourdough</p><small>photo goes here</small></div>
-          </div>
-        </div>
-        <div class="sticker sticker--price" data-reveal data-from="pop"><div><b>230</b><span>EGP</span></div></div>
-      </div>
+    <div class="hero__cta">
+      <a class="btn" href="#order">Order now <span class="arr">→</span></a>
+      <a class="btn btn--milk" href="#loaves">See the loaves</a>
     </div>
   </div>
 </section>
@@ -661,8 +610,7 @@ const PRODUCTS = SETTINGS.products;
     const once = words.map(w => "<span>" + w + "</span>").join("");
     el.innerHTML = once + once;
   };
-  fill($("#ticker"), ["The Cozy Loaf ✦ Slow rise, warm heart ✦", "The Cozy Loaf ✦ Slow rise, warm heart ✦",
-                      "The Cozy Loaf ✦ Slow rise, warm heart ✦", "The Cozy Loaf ✦ Slow rise, warm heart ✦"]);
+  fill($("#strip"), Array(6).fill("slow rise ✦ warm heart ✦"));
   fill($("#band"), ["Plain Sourdough ✦", "Black Olive Sourdough ✦", "Plain Sourdough ✦",
                     "Black Olive Sourdough ✦", "Plain Sourdough ✦", "Black Olive Sourdough ✦"]);
 
@@ -672,7 +620,7 @@ const PRODUCTS = SETTINGS.products;
      shows its branded placeholder — never a broken image. */
   $$("[data-logo]").forEach(img => window.cozyImage(img, SETTINGS.images.logo, () => { img.hidden = true; }));
 
-  [["[data-medallion]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(([boxSel, imgSel]) => {
+  [["[data-loafcard]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(([boxSel, imgSel]) => {
     const box = $(boxSel), img = $(imgSel);
     if (!box || !img) return;
     window.cozyImage(img, SETTINGS.images.plainSourdough, () => { box.dataset.empty = "true"; });
@@ -710,7 +658,7 @@ const PRODUCTS = SETTINGS.products;
 
   /* ── Parallax ────────────────────────────────────────────── */
   const floats = $$("[data-float]");
-  if (!reduced && floats.length && window.innerWidth > 700) {
+  if (!reduced && floats.length) {
     let ticking = false;
     const move = () => {
       const y = window.scrollY;
