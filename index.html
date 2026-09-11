@@ -417,7 +417,12 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
       <div class="medallion" data-medallion data-empty="false">
         <svg class="medallion__ring" viewBox="0 0 100 100" aria-hidden="true">
           <defs><path id="ring" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs>
-          <text><textPath href="#ring">slow rise ✦ warm heart ✦ slow rise ✦ warm heart ✦</textPath></text>
+          <!-- textLength pins the wording to the circle's exact circumference (2πr,
+     r=43) and lengthAdjust spreads the difference across the spacing, so the
+     ring closes in any font. Without it a textPath draws its string once at
+     the font's natural width: a narrower face than the one measured against
+     leaves the rest of the circle simply blank. -->
+          <text><textPath href="#ring" textLength="270" lengthAdjust="spacing">slow rise ✦ warm heart ✦ slow rise ✦ warm heart ✦</textPath></text>
         </svg>
         <div class="medallion__disc">
           <img alt="Plain Sourdough, golden crackly crust." data-hero-photo>
