@@ -40,7 +40,7 @@
 }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
 body{
   margin:0;background:var(--milk);color:var(--espresso);
   font-family:var(--ui);font-size:1.0625rem;line-height:1.6;overflow-x:hidden;
@@ -141,24 +141,39 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2.2rem}
 
 /* photo medallion */
-.medallion{position:relative;width:min(100%,29rem);margin-inline:auto;aspect-ratio:1}
+/* --disc is the disc's diameter, and every part of the composition is a
+   fraction of it: the ring's overhang, the space above and below, the price
+   badge. It is a pure length (no percentages), so descendants resolve it to
+   the same value the disc itself used.
+
+   The cap is expressed here rather than in a media query. A breakpoint that
+   fails to match — and a real device can differ from an emulator — used to
+   leave the disc at its full desktop 29rem on a phone, which is what made the
+   composition balloon. min() cannot fail to match. */
+.medallion{
+  --disc:min(63vw,29rem);
+  position:relative;width:min(100%,var(--disc));margin-inline:auto;aspect-ratio:1;
+}
+@supports not (aspect-ratio:1){
+  .medallion::before{content:"";display:block;padding-top:100%}
+}
 /* The ring is drawn 21% outside the medallion, so it occupies 1.42x the
    medallion's width. Once the medallion fills the column the ring runs off
    both edges and the wording is clipped. Below the width where a full-size
    ring still fits, size the medallion from the viewport instead so the whole
    ring lands on screen. 66vw x 1.42 = 94vw, leaving a margin either side.
    The ring, its rotation and the price badge keep their proportions. */
-@media (max-width:44rem){
-  .medallion{width:min(100%,63vw)}
-  /* The ring's top arc stands about 18% of the medallion's width above it,
-     which is more than the hero's grid gap, so it reaches into the buttons.
-     Drop the whole composition — ring, loaf and badge together — by that
-     overhang less the gap already there, so the offset grows with the ring. */
-  .medallion{margin-top:calc(11.5vw + 0.5rem)}
-  /* The ring also reaches below the medallion, and the hero clips its
-     overflow, so the wording needs room under it as well as beside it. */
-  .hero{padding-bottom:clamp(3.5rem,18vw,9rem)}
+/* While the hero is a single column the ring sits above and below the disc, so
+   the composition reserves room for it in proportion to the disc — the same
+   ratio at every width, no per-device tuning. Above 62rem the hero is two
+   columns and desktop keeps exactly what it had. */
+@media (max-width:61.99rem){
+  .medallion{margin-block:calc(var(--disc) * .20) calc(var(--disc) * .18)}
+  .sticker--price{width:calc(var(--disc) * .34);height:calc(var(--disc) * .34)}
+  .sticker--price b{font-size:calc(var(--disc) * .075)}
+  .sticker--price span{font-size:calc(var(--disc) * .027)}
 }
+
 /* The ring is decorative and sits 21% outside the medallion, which on a
    phone reaches up over the hero buttons and swallows their taps. */
 .medallion__ring{position:absolute;inset:-21%;animation:spin 38s linear infinite;pointer-events:none}
@@ -180,8 +195,9 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .sticker--price b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.85rem;line-height:1}
 .sticker--price span{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 @media (max-width:40rem){
-  .sticker--price{width:5.9rem;height:5.9rem;right:-4%}
-  .sticker--price b{font-size:1.4rem}
+  /* Only the horizontal nudge; the badge's size comes from --disc above, so a
+     fixed rem size here would undo it on the narrowest screens. */
+  .sticker--price{right:-4%}
 }
 
 /* ── Loaves ──────────────────────────────────────────────────── */
@@ -341,7 +357,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
    rotation widens the box further, so pending elements sit outside the
    viewport and the page can be dragged sideways. Enter vertically instead;
    the movement still reads, without ever leaving the viewport. */
-@media (max-width:48rem){
+@media (max-width:61.99rem){
   [data-reveal="pending"][data-from="left"],
   [data-reveal="pending"][data-from="right"]{transform:translateY(34px)}
   [data-reveal="pending"][data-from="pop"]{transform:scale(.93)}
