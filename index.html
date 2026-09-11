@@ -166,8 +166,10 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
    viewport height — toolbars shown — so unlike dvh it does not resize as they
    hide and reveal on scroll. It is behind @supports because an unknown unit
    inside min() would invalidate the whole declaration. */
-@supports (width: 1svh){
-  .medallion{--disc:min(58vw,30svh,29rem)}
+@media (max-width:61.99rem){
+  @supports (width: 1svh){
+    .medallion{--disc:min(58vw,30svh,29rem)}
+  }
 }
 @supports not (aspect-ratio:1){
   .medallion::before{content:"";display:block;padding-top:100%}
