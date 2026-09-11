@@ -150,6 +150,11 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
    The ring, its rotation and the price badge keep their proportions. */
 @media (max-width:44rem){
   .medallion{width:min(100%,63vw)}
+  /* The ring's top arc stands about 18% of the medallion's width above it,
+     which is more than the hero's grid gap, so it reaches into the buttons.
+     Drop the whole composition — ring, loaf and badge together — by that
+     overhang less the gap already there, so the offset grows with the ring. */
+  .medallion{margin-top:calc(11.5vw + 0.5rem)}
   /* The ring also reaches below the medallion, and the hero clips its
      overflow, so the wording needs room under it as well as beside it. */
   .hero{padding-bottom:clamp(3.5rem,18vw,9rem)}
