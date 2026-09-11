@@ -45,19 +45,19 @@ window.COZY_CONFIG = {
   ],
 
   /* ── Images ──────────────────────────────────────────────────
-     Files go in assets/ named by base name only:
+     Exact filenames inside assets/, or an empty string for a file
+     that does not exist yet.
 
-       assets/logo.<ext>              the circular logo
-       assets/plain-sourdough.<ext>   the Plain Sourdough photo
+     An empty string means the page requests nothing at all and uses
+     its built-in fallback — the wordmark "The Cozy Loaf" in place of
+     the logo. Naming the file exactly is what keeps the console free
+     of 404s; guessing at extensions is what filled it with them.
 
-     The extension does not matter. The page tries each of these in
-     turn and uses the first that loads, so a phone export lands
-     correctly whether it saves as .jpg, .jpeg, .png or .webp, and
-     whether the camera capitalised it.
-
-     Black Olive Sourdough deliberately has no image slot; it keeps
-     its own card until there is a real photograph of that loaf. */
-  imageExtensions: ["jpg", "jpeg", "png", "webp", "JPG", "JPEG", "PNG"],
+     When the logo lands in assets/, put its filename here. */
+  images: {
+    logo: "",
+    plainSourdough: "plain-sourdough.jpg"
+  },
 
   /* ── Products ──────────────────────────────────────────────── */
   products: {
@@ -108,17 +108,12 @@ window.COZY_CONFIG = {
 /* ═══════════════════════════════════════════════════════════════
    Internal helper — not a setting. Leave this alone.
 
-   Points an <img> at the first file that actually exists, trying
-   each extension in turn, and calls onMissing() if none load.
+   Points an <img> at one named file in assets/, and calls onMissing()
+   if the name is empty or the file fails to load. Exactly one request
+   per image, and none at all for an image that does not exist yet.
    ═══════════════════════════════════════════════════════════════ */
-window.cozyImage = function (img, base, onMissing) {
-  const exts = (window.COZY_CONFIG.imageExtensions || ["jpg", "png"]).slice();
-  let i = 0;
-  function next() {
-    if (i >= exts.length) { if (onMissing) onMissing(); return; }
-    img.src = base + "." + exts[i++];
-  }
-  img.addEventListener("error", next);
-  img.addEventListener("load", function () { if (img.naturalWidth === 0) next(); });
-  next();
+window.cozyImage = function (img, file, onMissing) {
+  if (!file) { if (onMissing) onMissing(); return; }   // nothing named, nothing requested
+  img.addEventListener("error", function () { if (onMissing) onMissing(); });
+  img.src = "assets/" + file;
 };

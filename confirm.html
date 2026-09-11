@@ -262,7 +262,7 @@ window.renderConfirmation = function () {
   const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const egp = n => "EGP " + Number(n).toLocaleString("en-US");
 
-  $$("[data-logo]").forEach(img => window.cozyImage(img, "assets/logo", () => { img.hidden = true; }));
+  $$("[data-logo]").forEach(img => window.cozyImage(img, (window.COZY_CONFIG.images || {}).logo, () => { img.hidden = true; }));
 
   const once = "<span>The Cozy Loaf \u2726 Slow rise, warm heart \u2726</span>";
   $("#conf-ticker").innerHTML = once.repeat(8);
