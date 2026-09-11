@@ -20,9 +20,17 @@
   {{items_text}} arrives as plain text, one loaf per line:
     2 × Plain Sourdough  —  EGP 460
     1 × Black Olive Sourdough  —  EGP 250
-  It is deliberately not HTML: EmailJS escapes markup inside variables,
-  so a table built in code would print its own tags. The block below
-  keeps the line breaks with white-space:pre-line instead.
+  The block below keeps those line breaks with white-space:pre-line.
+
+  Plain text rather than markup is a deliberate safety choice: if a value
+  containing tags were escaped it would reach the customer as visible HTML,
+  which is worse than a plainer layout.
+
+  The site also sends the same list as {{items_html}}, {{items}} and
+  {{order_items}}, so an older copy of this template still shows the loaves.
+  An unknown variable renders as nothing in EmailJS — a name mismatch leaves
+  a silent blank rather than an error, which is exactly how the loaf list
+  went missing once already.
 -->
 <body style="margin:0;padding:0;background:#FEFAF0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FEFAF0;">

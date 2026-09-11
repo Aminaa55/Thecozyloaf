@@ -751,7 +751,7 @@ const PRODUCTS = SETTINGS.products;
      They are sent independently — one failing must not stop the other,
      and neither failing is ever the customer's problem. */
   function emailParams(o) {
-    return {
+    return Object.assign(itemAliases(o), {
       order_number: o.reference,
       placed_at: new Date(o.placedAt).toLocaleString("en-GB"),
       first_name: o.customer.fullName.split(/\s+/)[0],
@@ -760,10 +760,25 @@ const PRODUCTS = SETTINGS.products;
       customer_email: o.customer.email,
       customer_address: o.customer.address,
       customer_area: o.customer.area,
-      items_text: o.items.map(i => i.quantity + " \u00d7 " + i.name + "  \u2014  " + egp(i.lineTotal)).join("\n"),
       subtotal: o.subtotal.toLocaleString("en-US"),
       notes: o.notes || "\u2014"
-    };
+    });
+  }
+
+  /* The loaf list, sent under every name a template might ask for.
+     EmailJS renders an unknown variable as nothing at all, so a template
+     written against one name and a site sending another produces a silently
+     empty space rather than an error. Sending the same readable text under
+     each alias means the list appears whichever name the template uses.
+
+     Every alias carries plain text, never markup: if EmailJS escapes the
+     value the customer would otherwise receive visible HTML tags, which is
+     worse than a layout that is merely plain. */
+  function itemAliases(o) {
+    const text = o.items
+      .map(i => i.quantity + " \u00d7 " + i.name + "  \u2014  " + egp(i.lineTotal))
+      .join("\n");
+    return { items_text: text, items_html: text, items: text, order_items: text };
   }
 
   function sendOrder(o) {

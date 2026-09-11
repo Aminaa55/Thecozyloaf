@@ -18,9 +18,13 @@
     {{customer_email}} {{customer_address}} {{customer_area}}
     {{items_text}} {{subtotal}} {{notes}}
 
-  {{items_text}} is plain text, one loaf per line — EmailJS escapes
-  markup inside variables, so the block below keeps its line breaks
-  with white-space:pre-line rather than building a table in code.
+  {{items_text}} is plain text, one loaf per line; the block below keeps
+  its line breaks with white-space:pre-line.
+
+  The site also sends the same list as {{items_html}}, {{items}} and
+  {{order_items}}, so an older copy of this template still shows the loaves.
+  An unknown variable renders as nothing in EmailJS, so a name mismatch
+  leaves a silent blank rather than an error.
 -->
 <body style="margin:0;padding:0;background:#FEFAF0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FEFAF0;">
