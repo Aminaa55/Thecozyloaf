@@ -12,23 +12,22 @@
 
 /* ═══════════════════════════════════════════════════════════════
    THE COZY LOAF
-   Palette as supplied: espresso, olive, terracotta, porcelain blue,
-   milky off-white, golden yellow. Blue / gold / terracotta lead;
-   espresso is ink and outline; olive is detail only, never a ground.
+   Palette as supplied: warm cream, warm terracotta / rust brown,
+   sage / olive green, dusty rose / soft blush. Sage and blush are the
+   grounds, terracotta leads, rust brown is the ink and every outline.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --espresso:#542916;
-  --espresso-2:#7A4426;
-  --olive:#B79858;
-  --olive-pale:#EFE3C9;
-  --terracotta:#A13A1E;
-  --terracotta-pale:#F0D2C6;
-  --blue:#88B8CE;
-  --blue-pale:#D9EAF2;
-  --blue-deep:#356F8B;
-  --milk:#FEFAF0;
-  --gold:#F1C166;
-  --gold-pale:#FBEBC8;
+  /* Cream, terracotta/rust, sage/olive, dusty rose — the logo palette. */
+  --espresso:#5A3220;
+  --espresso-2:#7E4A2E;
+  --terracotta:#9E4A28;
+  --terracotta-pale:#F2D8CA;
+  --sage:#BCCBA7;
+  --sage-pale:#E3E9D9;
+  --sage-deep:#6F8259;
+  --blush:#F0B9A6;
+  --blush-pale:#F7DED3;
+  --milk:#FCF6EC;
 
   --display:"Fraunces","Hoefler Text",Georgia,serif;
   --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -83,9 +82,9 @@ h1,h2,h3{
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--espresso)}
 .btn .arr{transition:transform .25s var(--pop)}
 .btn:hover .arr{transform:translateX(5px) rotate(12deg)}
-.btn--gold{--bg:var(--gold);--fg:var(--espresso)}
+.btn--blush{--bg:var(--blush);--fg:var(--espresso)}
 .btn--milk{--bg:var(--milk);--fg:var(--espresso)}
-.btn--blue{--bg:var(--blue);--fg:var(--espresso)}
+.btn--sage{--bg:var(--sage);--fg:var(--espresso)}
 .btn--sm{padding:.6rem 1.1rem;font-size:.85rem;border-width:2px;box-shadow:3px 3px 0 var(--espresso)}
 .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--espresso)}
 
@@ -94,12 +93,12 @@ h1,h2,h3{
 .ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
 .ticker span{font-family:var(--ui);font-weight:800;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding-inline:1.2rem;white-space:nowrap}
 @keyframes slide{to{transform:translateX(-50%)}}
-.band{background:var(--espresso);color:var(--gold);overflow:hidden;padding-block:1.3rem}
+.band{background:var(--espresso);color:var(--blush);overflow:hidden;padding-block:1.3rem}
 .band .ticker__track{animation-duration:38s}
 .band span{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;text-transform:none;padding-inline:1.4rem}
 
 /* ── Nav ─────────────────────────────────────────────────────── */
-.nav{position:sticky;top:0;z-index:100;background:var(--gold);border-bottom:3px solid var(--espresso)}
+.nav{position:sticky;top:0;z-index:100;background:var(--blush);border-bottom:3px solid var(--espresso)}
 .nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
 .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
 .brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--espresso);object-fit:cover;background:var(--milk)}
@@ -114,10 +113,11 @@ h1,h2,h3{
 /* ── Section grounds ─────────────────────────────────────────── */
 section{position:relative}
 .pad{padding-block:clamp(3.5rem,8vw,6.5rem)}
-.g-blue{background:var(--blue)}
+.g-sage{background:var(--sage)}
 .g-milk{background:var(--milk)}
-.g-gold{background:var(--gold)}
-.g-blue-pale{background:var(--blue-pale)}
+.g-blush{background:var(--blush)}
+.g-blush-pale{background:var(--blush-pale)}
+.g-sage-pale{background:var(--sage-pale)}
 .wave{display:block;width:100%;height:42px}
 .kicker{
   display:inline-flex;align-items:center;font-weight:800;font-size:.75rem;
@@ -137,12 +137,12 @@ section{position:relative}
 .conf h1 .ital{color:var(--terracotta)}
 .conf__ref{display:inline-block;margin-top:1.3rem;padding:.4rem 1.3rem;
   font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.4rem;
-  background:var(--blue);border:3px solid var(--espresso);border-radius:99px;
+  background:var(--sage);border:3px solid var(--espresso);border-radius:99px;
   box-shadow:4px 4px 0 var(--espresso);transform:rotate(-1.5deg)}
 .conf__msg{margin:1.5rem auto 0;max-width:36rem;font-size:1.08rem;line-height:1.65;color:var(--espresso-2)}
 .conf__promise{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.3rem;padding:.7rem 1.4rem;
   font-family:var(--ui);font-weight:700;font-size:1.02rem;
-  background:var(--blue-pale);color:var(--espresso);border:3px solid var(--espresso);border-radius:99px;
+  background:var(--sage-pale);color:var(--espresso);border:3px solid var(--espresso);border-radius:99px;
   box-shadow:4px 4px 0 var(--espresso)}
 .conf__promise b{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.25rem;color:var(--terracotta)}
 
@@ -161,7 +161,7 @@ section{position:relative}
 .rows .item dt{font-weight:700;color:var(--espresso)}
 .rows .tot{border-top:2px dashed var(--espresso);padding-top:.7rem;margin-top:.2rem}
 .rows .tot dt,.rows .tot dd{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem;color:var(--espresso)}
-.card__sec--gold{background:var(--gold-pale)}
+.card__sec--blush{background:var(--blush-pale)}
 .conf__cta{display:flex;flex-wrap:wrap;gap:.85rem;justify-content:center;margin-top:clamp(2rem,4vw,2.75rem)}
 .empty{max-width:34rem;margin-inline:auto;text-align:center}
 .empty h1{font-size:clamp(2rem,6vw,3.2rem)}
@@ -222,7 +222,7 @@ section{position:relative}
           <h2>Your loaves</h2>
           <dl class="rows" id="items"></dl>
         </div>
-        <div class="card__sec card__sec--gold">
+        <div class="card__sec card__sec--blush">
           <h2>Totals</h2>
           <dl class="rows" id="totals"></dl>
         </div>
@@ -240,7 +240,7 @@ section{position:relative}
     <div id="missing" class="empty" hidden>
       <h1>We could not find that order</h1>
       <p>The confirmation for an order is only shown once, right after it is placed.</p>
-      <div class="conf__cta"><a class="btn btn--gold" href="index.html">Back to home</a></div>
+      <div class="conf__cta"><a class="btn btn--blush" href="index.html">Back to home</a></div>
     </div>
 
   </div>

@@ -11,23 +11,22 @@
 <style>
 /* ═══════════════════════════════════════════════════════════════
    THE COZY LOAF
-   Palette as supplied: espresso, olive, terracotta, porcelain blue,
-   milky off-white, golden yellow. Blue / gold / terracotta lead;
-   espresso is ink and outline; olive is detail only, never a ground.
+   Palette as supplied: warm cream, warm terracotta / rust brown,
+   sage / olive green, dusty rose / soft blush. Sage and blush are the
+   grounds, terracotta leads, rust brown is the ink and every outline.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --espresso:#542916;
-  --espresso-2:#7A4426;
-  --olive:#B79858;
-  --olive-pale:#EFE3C9;
-  --terracotta:#A13A1E;
-  --terracotta-pale:#F0D2C6;
-  --blue:#88B8CE;
-  --blue-pale:#D9EAF2;
-  --blue-deep:#356F8B;
-  --milk:#FEFAF0;
-  --gold:#F1C166;
-  --gold-pale:#FBEBC8;
+  /* Cream, terracotta/rust, sage/olive, dusty rose — the logo palette. */
+  --espresso:#5A3220;
+  --espresso-2:#7E4A2E;
+  --terracotta:#9E4A28;
+  --terracotta-pale:#F2D8CA;
+  --sage:#BCCBA7;
+  --sage-pale:#E3E9D9;
+  --sage-deep:#6F8259;
+  --blush:#F0B9A6;
+  --blush-pale:#F7DED3;
+  --milk:#FCF6EC;
 
   --display:"Fraunces","Hoefler Text",Georgia,serif;
   --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -82,21 +81,21 @@ h1,h2,h3{
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--espresso)}
 .btn .arr{transition:transform .25s var(--pop)}
 .btn:hover .arr{transform:translateX(5px) rotate(12deg)}
-.btn--gold{--bg:var(--gold);--fg:var(--espresso)}
+.btn--blush{--bg:var(--blush);--fg:var(--espresso)}
 .btn--milk{--bg:var(--milk);--fg:var(--espresso)}
-.btn--blue{--bg:var(--blue);--fg:var(--espresso)}
+.btn--sage{--bg:var(--sage);--fg:var(--espresso)}
 .btn--sm{padding:.6rem 1.1rem;font-size:.85rem;border-width:2px;box-shadow:3px 3px 0 var(--espresso)}
 .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--espresso)}
 
 /* ── Ticker & marquee ────────────────────────────────────────── */
 .ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
 @keyframes slide{to{transform:translateX(-50%)}}
-.band{background:var(--espresso);color:var(--gold);overflow:hidden;padding-block:1.3rem}
+.band{background:var(--espresso);color:var(--blush);overflow:hidden;padding-block:1.3rem}
 .band .ticker__track{animation-duration:38s}
 .band span{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;text-transform:none;padding-inline:1.4rem}
 
 /* ── Nav ─────────────────────────────────────────────────────── */
-.nav{position:sticky;top:0;z-index:100;background:var(--gold);border-bottom:3px solid var(--espresso)}
+.nav{position:sticky;top:0;z-index:100;background:var(--blush);border-bottom:3px solid var(--espresso)}
 .nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
 .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
 .brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--espresso);object-fit:cover;background:var(--milk)}
@@ -115,10 +114,11 @@ section{position:relative}
    scrollIntoView alike. */
 section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .pad{padding-block:clamp(3.5rem,8vw,6.5rem)}
-.g-blue{background:var(--blue)}
+.g-sage{background:var(--sage)}
 .g-milk{background:var(--milk)}
-.g-gold{background:var(--gold)}
-.g-blue-pale{background:var(--blue-pale)}
+.g-blush{background:var(--blush)}
+.g-blush-pale{background:var(--blush-pale)}
+.g-sage-pale{background:var(--sage-pale)}
 .wave{display:block;width:100%;height:42px}
 .kicker{
   display:inline-flex;align-items:center;font-weight:800;font-size:.75rem;
@@ -130,7 +130,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 /* ── Hero ───────────────────────────────────────────────────────
    Built for a phone first: one column, each piece stacked, nothing
    sized from a square. Desktop rearranges the same three pieces. */
-.hero{background:var(--blue);overflow:hidden;padding-block:clamp(1.5rem,5vw,3.5rem) clamp(1.75rem,5vw,3.5rem)}
+.hero{background:var(--sage);overflow:hidden;padding-block:clamp(1.5rem,5vw,3.5rem) clamp(1.75rem,5vw,3.5rem)}
 .hero__in{display:grid;gap:clamp(1rem,3.5vw,1.6rem)}
 .hero__logo{width:clamp(4.5rem,16vw,7rem);height:clamp(4.5rem,16vw,7rem);border-radius:50%;
   border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
@@ -145,11 +145,11 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 /* the loaf and the strip beneath it read as one framed object */
 .stage{position:relative;width:100%;min-width:0}
 .loafcard{margin:0;border:4px solid var(--espresso);border-radius:1.6rem;overflow:hidden;
-  background:#0c0d11;box-shadow:7px 8px 0 rgba(84,41,22,.22);will-change:transform}
+  background:#0c0d11;box-shadow:7px 8px 0 rgba(90,50,32,.22);will-change:transform}
 .loafcard__img{position:relative;aspect-ratio:6/5;overflow:hidden}
 .loafcard__img img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
 .loafcard__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:1.5rem;
-  background:radial-gradient(80% 70% at 50% 35%, var(--gold-pale), var(--blue-pale))}
+  background:radial-gradient(80% 70% at 50% 35%, var(--blush-pale), var(--sage-pale))}
 .loafcard[data-empty="true"] img{display:none}
 .loafcard[data-empty="true"] .loafcard__fb{display:grid}
 .loafcard__fb p{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.4rem;margin:0;line-height:1.1}
@@ -157,7 +157,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .loafcard__strip{background:var(--espresso);overflow:hidden;padding-block:.5rem}
 .loafcard__strip .ticker__track{animation-duration:22s}
 .loafcard__strip span{font-family:var(--ui);font-weight:800;font-size:.74rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--gold);padding-inline:.9rem;white-space:nowrap}
+  text-transform:uppercase;color:var(--blush);padding-inline:.9rem;white-space:nowrap}
 
 .tag{position:absolute;right:-.35rem;bottom:3.1rem;z-index:3;display:grid;place-content:center;text-align:center;
   width:clamp(4.6rem,14vw,5.6rem);aspect-ratio:1;border-radius:50%;
@@ -189,18 +189,18 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .loaf + .loaf{margin-top:clamp(4rem,8vw,7rem)}
 .loaf__idx{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;
   font-size:clamp(4rem,11vw,9rem);line-height:.8;letter-spacing:-.05em;
-  -webkit-text-stroke:2.5px var(--olive);color:transparent;margin-bottom:-.12em}
+  -webkit-text-stroke:2.5px var(--sage-deep);color:transparent;margin-bottom:-.12em}
 .loaf__name{font-size:clamp(2.3rem,5.6vw,4.2rem);margin-top:.35rem}
 .loaf__price{display:inline-flex;align-items:baseline;gap:.45rem;margin-top:1.1rem;
   font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:2rem;
-  background:var(--gold);border:3px solid var(--espresso);border-radius:99px;padding:.35rem 1.2rem;
+  background:var(--blush);border:3px solid var(--espresso);border-radius:99px;padding:.35rem 1.2rem;
   box-shadow:4px 4px 0 var(--espresso);transform:rotate(-2deg)}
 .loaf__price small{font-family:var(--ui);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 .loaf__desc{font-size:1.12rem;line-height:1.65;max-width:34ch;margin:1.4rem 0 0;color:var(--espresso-2)}
 .loaf__buy{margin-top:1.9rem}
 
 .frame{position:relative;border:4px solid var(--espresso);border-radius:2rem;overflow:hidden;
-  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(84,41,22,.18);background:var(--gold-pale);
+  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(90,50,32,.18);background:var(--blush-pale);
   transition:transform .4s var(--pop)}
 /* Behind the photograph, matched to its own ground so the margins contain
    leaves read as part of the shot rather than as pale slivers. The branded
@@ -213,8 +213,8 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .frame img{width:100%;height:100%;object-fit:contain;object-position:center;transform:scale(.92)}
 .frame:hover{transform:rotate(-1.5deg) scale(1.015)}
 .frame__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
-  background:radial-gradient(62% 46% at 32% 28%, var(--gold-pale) 0%, transparent 62%),
-             radial-gradient(66% 52% at 74% 76%, var(--blue-pale) 0%, transparent 64%), var(--milk)}
+  background:radial-gradient(62% 46% at 32% 28%, var(--blush-pale) 0%, transparent 62%),
+             radial-gradient(66% 52% at 74% 76%, var(--sage-pale) 0%, transparent 64%), var(--milk)}
 .frame__fb img{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--espresso);object-fit:cover;background:var(--milk)}
 .frame__fb img[hidden]{display:none}
 .frame[data-empty="true"] > img{display:none}
@@ -223,10 +223,10 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 /* Black Olive — branded placeholder, never a borrowed photo */
 .olive-card{position:relative;aspect-ratio:4/5;border-radius:2rem;overflow:hidden;
   border:4px dashed var(--espresso);
-  background:radial-gradient(60% 45% at 30% 25%, var(--gold-pale) 0%, transparent 60%),
-             radial-gradient(65% 50% at 75% 75%, var(--blue-pale) 0%, transparent 62%), var(--milk);
+  background:radial-gradient(60% 45% at 30% 25%, var(--blush-pale) 0%, transparent 60%),
+             radial-gradient(65% 50% at 75% 75%, var(--sage-pale) 0%, transparent 62%), var(--milk);
   display:grid;place-content:center;text-align:center;padding:2.5rem 2rem;
-  box-shadow:10px 12px 0 rgba(84,41,22,.14)}
+  box-shadow:10px 12px 0 rgba(90,50,32,.14)}
 .olive-card__mark{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--espresso);object-fit:cover;background:var(--milk)}
 .olive-card__mark[hidden]{display:none}
 .olive-card h3{font-size:1.7rem}
@@ -234,8 +234,8 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .olive-card__olives{position:absolute;inset:0;pointer-events:none}
 .olive-card__olives span{position:absolute;width:2.5rem;height:3.2rem;
   border-radius:50% 50% 48% 48%/58% 58% 42% 42%;
-  background:radial-gradient(70% 60% at 34% 30%, #7A4426 0%, #3C1C0E 72%);
-  border:3px solid var(--espresso);box-shadow:3px 3px 0 rgba(84,41,22,.25)}
+  background:radial-gradient(70% 60% at 34% 30%, #7E4A2E 0%, #3F2214 72%);
+  border:3px solid var(--espresso);box-shadow:3px 3px 0 rgba(90,50,32,.25)}
 .olive-card__olives span::after{content:"";position:absolute;left:50%;top:30%;width:34%;height:26%;
   transform:translateX(-50%);border-radius:50%;background:var(--terracotta);border:2px solid var(--espresso)}
 .olive-card__olives span:nth-child(1){left:9%;top:11%;animation:bob 5.5s ease-in-out infinite}
@@ -250,7 +250,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 
 .rules{display:grid;gap:.6rem;margin:1.6rem 0 0;padding:0;list-style:none}
 .rules li{display:flex;gap:.7rem;align-items:flex-start;font-weight:600;font-size:.98rem}
-.rules li b{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--blue);
+.rules li b{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--sage);
   border:2.5px solid var(--espresso);display:grid;place-content:center;font-size:.85rem}
 
 .pick{display:grid;grid-template-columns:1fr auto;gap:1rem 1.25rem;align-items:center;
@@ -260,13 +260,13 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .pick:hover{transform:translateY(-4px) rotate(-.6deg)}
 .pick h3{font-size:1.5rem}
 .pick__price{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem;margin-top:.3rem}
-.step{display:flex;align-items:center;border:3px solid var(--espresso);border-radius:99px;background:var(--gold-pale);overflow:hidden}
+.step{display:flex;align-items:center;border:3px solid var(--espresso);border-radius:99px;background:var(--blush-pale);overflow:hidden}
 .step button{width:2.9rem;height:2.9rem;border:0;background:transparent;color:var(--espresso);font-size:1.4rem;font-weight:800;cursor:pointer;line-height:1;transition:background .18s}
-.step button:hover:not([disabled]){background:var(--gold)}
+.step button:hover:not([disabled]){background:var(--blush)}
 .step button[disabled]{opacity:.35;cursor:not-allowed}
 .step output{min-width:2.6rem;text-align:center;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem}
 
-.basket{position:sticky;top:6rem;background:var(--blue);border:4px solid var(--espresso);border-radius:1.8rem;
+.basket{position:sticky;top:6rem;background:var(--sage);border:4px solid var(--espresso);border-radius:1.8rem;
   padding:1.6rem 1.5rem 1.7rem;box-shadow:8px 9px 0 var(--espresso)}
 .basket h3{font-size:1.8rem;margin-bottom:1rem}
 .basket__lines{display:grid;gap:.6rem;min-height:3rem;margin-bottom:1rem}
@@ -278,7 +278,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .sums div{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;font-weight:600;font-size:.95rem}
 .sums .big dt,.sums .big dd{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.5rem}
 .sums dt,.sums dd{margin:0}
-.sums .muted{color:var(--espresso-2);font-weight:600}
+.sums .muted{color:var(--espresso);font-weight:600}
 .basket .btn{width:100%}
 .basket__fine{margin:.9rem 0 0;font-size:.85rem;text-align:center;line-height:1.45}
 
@@ -320,10 +320,10 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   font-size:clamp(1.8rem,5vw,3rem);text-decoration:none;
   transition:transform .25s var(--pop)}
 .social a.handle:hover{transform:rotate(-2deg) scale(1.04);color:var(--terracotta)}
-.foot{background:var(--espresso);color:var(--gold-pale);padding-block:2.6rem 3.2rem;text-align:center}
-.foot h2{font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--gold)}
-.foot p{margin:.8rem 0 0;font-size:.95rem;color:var(--blue-pale)}
-.foot a{color:var(--gold)}
+.foot{background:var(--espresso);color:var(--blush-pale);padding-block:2.6rem 3.2rem;text-align:center}
+.foot h2{font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--blush)}
+.foot p{margin:.8rem 0 0;font-size:.95rem;color:var(--blush-pale)}
+.foot a{color:var(--blush)}
 
 /* ── Reveal — page renders at rest, JS opts elements in ──────── */
 [data-reveal="pending"]{opacity:0}
@@ -403,7 +403,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 </section>
 
 <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
-  <path d="M0,30 C180,66 360,-6 540,24 C720,54 900,6 1080,24 C1260,42 1380,36 1440,24 L1440,60 L0,60 Z" fill="#542916"/>
+  <path d="M0,30 C180,66 360,-6 540,24 C720,54 900,6 1080,24 C1260,42 1380,36 1440,24 L1440,60 L0,60 Z" fill="#5A3220"/>
 </svg>
 <section class="band" aria-hidden="true"><div class="ticker__track" id="band"></div></section>
 
@@ -448,14 +448,14 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
         <h2 class="loaf__name">Black Olive<br>Sourdough</h2>
         <p class="loaf__price">EGP 250 <small>per loaf</small></p>
         <p style="margin:1.4rem 0 0"><span class="ph-tag">send me your description for this one</span></p>
-        <div class="loaf__buy"><button class="btn btn--gold" type="button" data-add="olive">Add to basket <span class="arr">→</span></button></div>
+        <div class="loaf__buy"><button class="btn btn--blush" type="button" data-add="olive">Add to basket <span class="arr">→</span></button></div>
       </div>
     </article>
   </div>
 </section>
 
 <!-- ══ ORDER ══════════════════════════════════════════════════ -->
-<section class="pad g-gold" id="order">
+<section class="pad g-blush-pale" id="order">
   <div class="wrap">
     <p class="kicker" data-reveal data-from="pop">Order</p>
 
@@ -572,7 +572,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 </section>
 
 <!-- ══ SOCIAL ═════════════════════════════════════════════════ -->
-<section class="pad g-blue-pale social">
+<section class="pad g-sage-pale social">
   <div class="wrap">
     <img alt="" data-logo data-reveal data-from="pop">
     <p><a class="handle" href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
