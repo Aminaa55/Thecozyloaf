@@ -16,17 +16,20 @@
    grounds, terracotta leads, rust brown is the ink and every outline.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  /* Cream, terracotta/rust, sage/olive, dusty rose — the logo palette. */
-  --espresso:#5A3220;
-  --espresso-2:#7E4A2E;
-  --terracotta:#9E4A28;
-  --terracotta-pale:#EFDCD2;
-  --sage:#D3DCC6;
-  --sage-pale:#EBF0E3;
-  --sage-deep:#7A8A68;
-  --blush:#F1D5C8;
-  --blush-pale:#FAEBE3;
-  --milk:#FCF6EC;
+  /* Cream, terracotta/rust, sage/olive, dusty rose — the logo palette,
+     led by the rose. Sage is the detail note, terracotta the call to
+     action, rosewood the ink. */
+  --espresso:#6B3A2E;
+  --espresso-2:#8C5644;
+  --terracotta:#A8503A;
+  --terracotta-pale:#F1DCD5;
+  --rose:#EBB9AC;
+  --blush:#F7DFD6;
+  --blush-pale:#FDF0EB;
+  --sage:#D6DFC9;
+  --sage-pale:#EDF1E6;
+  --sage-deep:#7E8D6C;
+  --milk:#FDF7F2;
 
   --display:"Fraunces","Hoefler Text",Georgia,serif;
   --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -90,12 +93,12 @@ h1,h2,h3{
 /* ── Ticker & marquee ────────────────────────────────────────── */
 .ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
 @keyframes slide{to{transform:translateX(-50%)}}
-.band{background:var(--espresso);color:var(--blush);overflow:hidden;padding-block:1.3rem}
+.band{background:var(--rose);color:var(--espresso);overflow:hidden;padding-block:1.3rem}
 .band .ticker__track{animation-duration:38s}
 .band span{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;text-transform:none;padding-inline:1.4rem}
 
 /* ── Nav ─────────────────────────────────────────────────────── */
-.nav{position:sticky;top:0;z-index:100;background:var(--blush);border-bottom:3px solid var(--espresso)}
+.nav{position:sticky;top:0;z-index:100;background:var(--rose);border-bottom:3px solid var(--espresso)}
 .nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
 .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
 .brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--espresso);object-fit:cover;background:var(--milk)}
@@ -119,7 +122,13 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .g-blush{background:var(--blush)}
 .g-blush-pale{background:var(--blush-pale)}
 .g-sage-pale{background:var(--sage-pale)}
-.wave{display:block;width:100%;height:42px}
+/* A row of touching semicircles: one tile is a half-disc as wide as the
+   strip is tall, so the bumps meet edge to edge at any width. */
+.scallop{display:block;width:100%;height:22px;
+  background:radial-gradient(circle 22px at 50% 100%, var(--edge) 0 21px, transparent 22px) repeat-x 0 0/44px 22px,
+             var(--behind)}
+.scallop--band{--edge:var(--rose);--behind:var(--blush)}
+.scallop--foot{--edge:var(--espresso);--behind:var(--sage-pale)}
 .kicker{
   display:inline-flex;align-items:center;font-weight:800;font-size:.75rem;
   letter-spacing:.2em;text-transform:uppercase;color:var(--terracotta);
@@ -130,8 +139,10 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 /* ── Hero ───────────────────────────────────────────────────────
    Built for a phone first: one column, each piece stacked, nothing
    sized from a square. Desktop rearranges the same three pieces. */
-.hero{background:var(--sage);overflow:hidden;padding-block:clamp(1.5rem,5vw,3.5rem) clamp(1.75rem,5vw,3.5rem)}
-.hero__in{display:grid;gap:clamp(1rem,3.5vw,1.6rem)}
+.hero{background:var(--blush);overflow:hidden;padding-block:clamp(1.5rem,5vw,3.5rem) clamp(1.75rem,5vw,3.5rem)}
+.hero__in{display:grid;gap:clamp(1rem,3.5vw,1.6rem);position:relative;z-index:1}
+.sprig{position:absolute;z-index:0;pointer-events:none;
+  right:.4rem;top:.6rem;width:clamp(4.8rem,18vw,6.4rem);transform:rotate(14deg)}
 .hero__logo{width:clamp(4.5rem,16vw,7rem);height:clamp(4.5rem,16vw,7rem);border-radius:50%;
   border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
 .hero__logo[hidden]{display:none}
@@ -144,8 +155,8 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 
 /* the loaf and the strip beneath it read as one framed object */
 .stage{position:relative;width:100%;min-width:0}
-.loafcard{margin:0;border:4px solid var(--espresso);border-radius:1.6rem;overflow:hidden;
-  background:#0c0d11;box-shadow:7px 8px 0 rgba(90,50,32,.22);will-change:transform}
+.loafcard{margin:0;border:4px solid var(--espresso);border-radius:2.2rem;overflow:hidden;
+  background:#0c0d11;box-shadow:7px 8px 0 rgba(190,120,108,.34);will-change:transform}
 .loafcard__img{position:relative;aspect-ratio:6/5;overflow:hidden}
 .loafcard__img img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
 .loafcard__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:1.5rem;
@@ -154,14 +165,14 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .loafcard[data-empty="true"] .loafcard__fb{display:grid}
 .loafcard__fb p{font-family:var(--display);font-variation-settings:var(--wonky);font-size:1.4rem;margin:0;line-height:1.1}
 .loafcard__fb small{display:block;font-family:var(--hand);font-size:1.1rem;color:var(--terracotta);margin-top:.5rem}
-.loafcard__strip{background:var(--espresso);overflow:hidden;padding-block:.5rem}
+.loafcard__strip{background:var(--rose);overflow:hidden;padding-block:.5rem}
 .loafcard__strip .ticker__track{animation-duration:22s}
 .loafcard__strip span{font-family:var(--ui);font-weight:800;font-size:.74rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--blush);padding-inline:.9rem;white-space:nowrap}
+  text-transform:uppercase;color:var(--espresso);padding-inline:.9rem;white-space:nowrap}
 
 .tag{position:absolute;right:-.35rem;bottom:3.1rem;z-index:3;display:grid;place-content:center;text-align:center;
   width:clamp(4.6rem,14vw,5.6rem);aspect-ratio:1;border-radius:50%;
-  background:var(--terracotta);color:var(--milk);border:3px solid var(--espresso);
+  background:var(--rose);color:var(--espresso);border:3px solid var(--espresso);
   box-shadow:4px 5px 0 var(--espresso);transform:rotate(-11deg)}
 .tag i{display:block;font-style:normal;font-size:.58rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;opacity:.92}
 .tag b{display:block;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.5rem;line-height:1}
@@ -177,6 +188,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   .stage{grid-area:stage}
   .hero__cta{grid-area:cta;align-self:start}
   .hero__cta .btn{flex:0 0 auto}
+  .sprig{right:2.2rem;top:1.2rem;width:8rem}
   .loafcard__img{aspect-ratio:5/4}
 }
 
@@ -199,8 +211,8 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .loaf__desc{font-size:1.12rem;line-height:1.65;max-width:34ch;margin:1.4rem 0 0;color:var(--espresso-2)}
 .loaf__buy{margin-top:1.9rem}
 
-.frame{position:relative;border:4px solid var(--espresso);border-radius:2rem;overflow:hidden;
-  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(90,50,32,.18);background:var(--blush-pale);
+.frame{position:relative;border:4px solid var(--espresso);border-radius:2.6rem;overflow:hidden;
+  aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(190,120,108,.30);background:var(--blush-pale);
   transition:transform .4s var(--pop)}
 /* Behind the photograph, matched to its own ground so the margins contain
    leaves read as part of the shot rather than as pale slivers. The branded
@@ -221,12 +233,12 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .frame[data-empty="true"] .frame__fb{display:grid}
 
 /* Black Olive — branded placeholder, never a borrowed photo */
-.olive-card{position:relative;aspect-ratio:4/5;border-radius:2rem;overflow:hidden;
+.olive-card{position:relative;aspect-ratio:4/5;border-radius:2.6rem;overflow:hidden;
   border:4px dashed var(--espresso);
   background:radial-gradient(60% 45% at 30% 25%, var(--blush-pale) 0%, transparent 60%),
              radial-gradient(65% 50% at 75% 75%, var(--sage-pale) 0%, transparent 62%), var(--milk);
   display:grid;place-content:center;text-align:center;padding:2.5rem 2rem;
-  box-shadow:10px 12px 0 rgba(90,50,32,.14)}
+  box-shadow:10px 12px 0 rgba(190,120,108,.26)}
 .olive-card__mark{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--espresso);object-fit:cover;background:var(--milk)}
 .olive-card__mark[hidden]{display:none}
 .olive-card h3{font-size:1.7rem}
@@ -235,7 +247,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .olive-card__olives span{position:absolute;width:2.5rem;height:3.2rem;
   border-radius:50% 50% 48% 48%/58% 58% 42% 42%;
   background:radial-gradient(70% 60% at 34% 30%, #7E4A2E 0%, #3F2214 72%);
-  border:3px solid var(--espresso);box-shadow:3px 3px 0 rgba(90,50,32,.25)}
+  border:3px solid var(--espresso);box-shadow:3px 3px 0 rgba(190,120,108,.34)}
 .olive-card__olives span::after{content:"";position:absolute;left:50%;top:30%;width:34%;height:26%;
   transform:translateX(-50%);border-radius:50%;background:var(--terracotta);border:2px solid var(--espresso)}
 .olive-card__olives span:nth-child(1){left:9%;top:11%;animation:bob 5.5s ease-in-out infinite}
@@ -266,7 +278,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .step button[disabled]{opacity:.35;cursor:not-allowed}
 .step output{min-width:2.6rem;text-align:center;font-family:var(--display);font-variation-settings:var(--wonky);font-weight:700;font-size:1.3rem}
 
-.basket{position:sticky;top:6rem;background:var(--sage);border:4px solid var(--espresso);border-radius:1.8rem;
+.basket{position:sticky;top:6rem;background:var(--sage);border:4px solid var(--espresso);border-radius:2.4rem;
   padding:1.6rem 1.5rem 1.7rem;box-shadow:8px 9px 0 var(--espresso)}
 .basket h3{font-size:1.8rem;margin-bottom:1rem}
 .basket__lines{display:grid;gap:.6rem;min-height:3rem;margin-bottom:1rem}
@@ -283,7 +295,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .basket__fine{margin:.9rem 0 0;font-size:.85rem;text-align:center;line-height:1.45}
 
 /* ── Checkout ────────────────────────────────────────────────── */
-.checkout{margin-top:2.5rem;background:var(--milk);border:4px solid var(--espresso);border-radius:1.8rem;
+.checkout{margin-top:2.5rem;background:var(--milk);border:4px solid var(--espresso);border-radius:2.4rem;
   padding:clamp(1.5rem,4vw,2.5rem);box-shadow:8px 9px 0 var(--espresso);display:none}
 .checkout[data-open="true"]{display:block;animation:pop .45s var(--pop) both}
 @keyframes pop{from{transform:scale(.96) translateY(14px);opacity:0}to{transform:none;opacity:1}}
@@ -380,6 +392,24 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 
 <!-- ══ HERO ═══════════════════════════════════════════════════ -->
 <section class="hero">
+  <svg class="sprig" viewBox="0 0 100 140" aria-hidden="true" focusable="false">
+    <g fill="var(--sage)" stroke="var(--sage-deep)" stroke-width="2.5" stroke-linejoin="round">
+      <path d="M52 136 C52 106 50 80 44 58" fill="none" stroke-linecap="round"/>
+      <path d="M48 98 C31 94 23 81 25 68 C40 69 48 80 48 98Z"/>
+      <path d="M50 116 C67 114 77 103 77 90 C62 88 52 97 50 116Z"/>
+      <path d="M46 74 C33 66 30 53 35 42 C47 48 50 60 46 74Z"/>
+    </g>
+    <g transform="translate(44 40)" stroke="var(--espresso)" stroke-width="2.5">
+      <g fill="var(--rose)">
+        <ellipse cx="0" cy="-14" rx="8.5" ry="12"/>
+        <ellipse cx="0" cy="-14" rx="8.5" ry="12" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-14" rx="8.5" ry="12" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-14" rx="8.5" ry="12" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-14" rx="8.5" ry="12" transform="rotate(288)"/>
+      </g>
+      <circle r="6" fill="var(--terracotta)"/>
+    </g>
+  </svg>
   <div class="wrap hero__in">
     <img class="hero__logo" alt="The Cozy Loaf" data-logo>
     <h1 class="wordmark">The <span class="ital">Cozy</span><br>Loaf</h1>
@@ -402,9 +432,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   </div>
 </section>
 
-<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
-  <path d="M0,30 C180,66 360,-6 540,24 C720,54 900,6 1080,24 C1260,42 1380,36 1440,24 L1440,60 L0,60 Z" fill="#5A3220"/>
-</svg>
+<div class="scallop scallop--band" aria-hidden="true"></div>
 <section class="band" aria-hidden="true"><div class="ticker__track" id="band"></div></section>
 
 <!-- ══ LOAVES ═════════════════════════════════════════════════ -->
@@ -463,7 +491,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
       <div data-reveal data-from="left">
         <ul class="rules">
           <li><b>48</b><span id="rule-promise"></span></li>
-          <li><b>✦</b><span id="rule-fee"></span></li>
+          <li><b>❀</b><span id="rule-fee"></span></li>
         </ul>
 
         <div style="margin-top:2rem">
@@ -581,6 +609,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 
 </main>
 
+<div class="scallop scallop--foot" aria-hidden="true"></div>
 <footer class="foot">
   <div class="wrap">
     <h2>Slow rise, <span class="ital">warm heart.</span></h2>
@@ -610,9 +639,9 @@ const PRODUCTS = SETTINGS.products;
     const once = words.map(w => "<span>" + w + "</span>").join("");
     el.innerHTML = once + once;
   };
-  fill($("#strip"), Array(6).fill("slow rise ✦ warm heart ✦"));
-  fill($("#band"), ["Plain Sourdough ✦", "Black Olive Sourdough ✦", "Plain Sourdough ✦",
-                    "Black Olive Sourdough ✦", "Plain Sourdough ✦", "Black Olive Sourdough ✦"]);
+  fill($("#strip"), Array(6).fill("slow rise ❀ warm heart ❀"));
+  fill($("#band"), ["Plain Sourdough ❀", "Black Olive Sourdough ❀", "Plain Sourdough ❀",
+                    "Black Olive Sourdough ❀", "Plain Sourdough ❀", "Black Olive Sourdough ❀"]);
 
   /* ── Image slots ──────────────────────────────────────────────
      Each <img> is pointed at assets/<name> and the loader finds the

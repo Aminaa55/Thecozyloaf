@@ -17,17 +17,20 @@
    grounds, terracotta leads, rust brown is the ink and every outline.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  /* Cream, terracotta/rust, sage/olive, dusty rose — the logo palette. */
-  --espresso:#5A3220;
-  --espresso-2:#7E4A2E;
-  --terracotta:#9E4A28;
-  --terracotta-pale:#EFDCD2;
-  --sage:#D3DCC6;
-  --sage-pale:#EBF0E3;
-  --sage-deep:#7A8A68;
-  --blush:#F1D5C8;
-  --blush-pale:#FAEBE3;
-  --milk:#FCF6EC;
+  /* Cream, terracotta/rust, sage/olive, dusty rose — the logo palette,
+     led by the rose. Sage is the detail note, terracotta the call to
+     action, rosewood the ink. */
+  --espresso:#6B3A2E;
+  --espresso-2:#8C5644;
+  --terracotta:#A8503A;
+  --terracotta-pale:#F1DCD5;
+  --rose:#EBB9AC;
+  --blush:#F7DFD6;
+  --blush-pale:#FDF0EB;
+  --sage:#D6DFC9;
+  --sage-pale:#EDF1E6;
+  --sage-deep:#7E8D6C;
+  --milk:#FDF7F2;
 
   --display:"Fraunces","Hoefler Text",Georgia,serif;
   --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -93,12 +96,12 @@ h1,h2,h3{
 .ticker__track{display:flex;width:max-content;animation:slide 30s linear infinite}
 .ticker span{font-family:var(--ui);font-weight:800;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding-inline:1.2rem;white-space:nowrap}
 @keyframes slide{to{transform:translateX(-50%)}}
-.band{background:var(--espresso);color:var(--blush);overflow:hidden;padding-block:1.3rem}
+.band{background:var(--rose);color:var(--espresso);overflow:hidden;padding-block:1.3rem}
 .band .ticker__track{animation-duration:38s}
 .band span{font-family:var(--display);font-variation-settings:var(--wonky);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;text-transform:none;padding-inline:1.4rem}
 
 /* ── Nav ─────────────────────────────────────────────────────── */
-.nav{position:sticky;top:0;z-index:100;background:var(--blush);border-bottom:3px solid var(--espresso)}
+.nav{position:sticky;top:0;z-index:100;background:var(--rose);border-bottom:3px solid var(--espresso)}
 .nav__in{display:flex;align-items:center;gap:1rem;min-height:4.4rem}
 .brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;margin-right:auto}
 .brand img{width:2.9rem;height:2.9rem;border-radius:50%;border:2.5px solid var(--espresso);object-fit:cover;background:var(--milk)}
@@ -118,7 +121,6 @@ section{position:relative}
 .g-blush{background:var(--blush)}
 .g-blush-pale{background:var(--blush-pale)}
 .g-sage-pale{background:var(--sage-pale)}
-.wave{display:block;width:100%;height:42px}
 .kicker{
   display:inline-flex;align-items:center;font-weight:800;font-size:.75rem;
   letter-spacing:.2em;text-transform:uppercase;color:var(--terracotta);
