@@ -182,5 +182,5 @@ upload them straight from GitHub.
 
 ## Still needed
 
-Black Olive Sourdough description · the two image files · an email address or
-form endpoint for orders · storage/care wording if that section should return.
+Olive Sourdough description · the logo file · storage/care wording if that
+section should return.

@@ -56,13 +56,14 @@ window.COZY_CONFIG = {
      When the logo lands in assets/, put its filename here. */
   images: {
     logo: "",
-    plainSourdough: "plain-sourdough.jpg"
+    plainSourdough: "plain-sourdough.jpg",
+    oliveSourdough: "olive-sourdough.jpg"
   },
 
   /* ── Products ──────────────────────────────────────────────── */
   products: {
     plain: { name: "Plain Sourdough", price: 230 },
-    olive: { name: "Black Olive Sourdough", price: 250 }
+    olive: { name: "Olive Sourdough", price: 250 }
   },
 
   /* ── Email notifications, via EmailJS ────────────────────────

@@ -215,13 +215,13 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   aspect-ratio:4/5;box-shadow:10px 12px 0 rgba(190,120,108,.30);background:var(--blush-pale);
   transition:transform .4s var(--pop)}
 /* Behind the photograph, matched to its own ground so the margins contain
-   leaves read as part of the shot rather than as pale slivers. The branded
-   placeholder keeps the gold. */
+   leaves read as part of the shot rather than as pale slivers. Both loaves
+   were shot on the same near-black, so one value serves both. */
 .frame:not([data-empty="true"]){background:#0c0d11}
-/* The loaf runs off the left edge of the photograph itself — 154 of its 741
-   rows reach x=0 — so cover can never leave a margin there at any zoom. contain
-   fits the whole frame, and the slight inset gives the loaf room on all four
-   sides instead of pressing it against the border. */
+/* Each loaf runs off an edge of its own photograph — the Plain one reaches
+   x=0 across 154 of its 741 rows — so cover can never leave a margin there at
+   any zoom. contain fits the whole frame, and the slight inset gives the loaf
+   room on all four sides instead of pressing it against the border. */
 .frame img{width:100%;height:100%;object-fit:contain;object-position:center;transform:scale(.92)}
 .frame:hover{transform:rotate(-1.5deg) scale(1.015)}
 .frame__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:2rem;
@@ -231,30 +231,6 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .frame__fb img[hidden]{display:none}
 .frame[data-empty="true"] > img{display:none}
 .frame[data-empty="true"] .frame__fb{display:grid}
-
-/* Black Olive — branded placeholder, never a borrowed photo */
-.olive-card{position:relative;aspect-ratio:4/5;border-radius:2.6rem;overflow:hidden;
-  border:4px dashed var(--espresso);
-  background:radial-gradient(60% 45% at 30% 25%, var(--blush-pale) 0%, transparent 60%),
-             radial-gradient(65% 50% at 75% 75%, var(--sage-pale) 0%, transparent 62%), var(--milk);
-  display:grid;place-content:center;text-align:center;padding:2.5rem 2rem;
-  box-shadow:10px 12px 0 rgba(190,120,108,.26)}
-.olive-card__mark{width:5.5rem;height:5.5rem;margin:0 auto 1.1rem;border-radius:50%;border:3px solid var(--espresso);object-fit:cover;background:var(--milk)}
-.olive-card__mark[hidden]{display:none}
-.olive-card h3{font-size:1.7rem}
-.olive-card p{font-family:var(--hand);font-size:1.3rem;color:var(--terracotta);margin:.5rem 0 0}
-.olive-card__olives{position:absolute;inset:0;pointer-events:none}
-.olive-card__olives span{position:absolute;width:2.5rem;height:3.2rem;
-  border-radius:50% 50% 48% 48%/58% 58% 42% 42%;
-  background:radial-gradient(70% 60% at 34% 30%, #7E4A2E 0%, #3F2214 72%);
-  border:3px solid var(--espresso);box-shadow:3px 3px 0 rgba(190,120,108,.34)}
-.olive-card__olives span::after{content:"";position:absolute;left:50%;top:30%;width:34%;height:26%;
-  transform:translateX(-50%);border-radius:50%;background:var(--terracotta);border:2px solid var(--espresso)}
-.olive-card__olives span:nth-child(1){left:9%;top:11%;animation:bob 5.5s ease-in-out infinite}
-.olive-card__olives span:nth-child(2){right:10%;top:22%;animation:bob 6.8s ease-in-out infinite .6s}
-.olive-card__olives span:nth-child(3){left:13%;bottom:13%;animation:bob 6.1s ease-in-out infinite 1.2s}
-.olive-card__olives span:nth-child(4){right:11%;bottom:19%;animation:bob 7.4s ease-in-out infinite .3s}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(8deg)}}
 
 /* ── Ordering ────────────────────────────────────────────────── */
 .order{display:grid;gap:clamp(1.75rem,4vw,3rem);align-items:start;margin-top:2.5rem}
@@ -464,19 +440,22 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 
     <article class="loaf loaf--flip">
       <div class="loaf__art" data-reveal data-from="right">
-        <div class="olive-card">
-          <div class="olive-card__olives" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-          <img class="olive-card__mark" alt="" data-logo>
-          <h3>Black Olive<br>Sourdough</h3>
-          <p>photo coming soon</p>
+        <div class="frame" data-frame data-empty="false">
+          <img alt="Olive Sourdough, studded with green olives." data-olive-photo>
+          <div class="frame__fb">
+            <div>
+              <img alt="" data-logo>
+              <h3 style="font-size:1.8rem">Olive<br>Sourdough</h3>
+              <p class="hand" style="font-size:1.25rem;color:var(--terracotta);margin:.5rem 0 0">photo goes here</p>
+            </div>
+          </div>
         </div>
       </div>
       <div data-reveal data-from="left">
         <div class="loaf__idx">02</div>
-        <h2 class="loaf__name">Black Olive<br>Sourdough</h2>
+        <h2 class="loaf__name">Olive<br>Sourdough</h2>
         <p class="loaf__price">EGP 250 <small>per loaf</small></p>
-        <p style="margin:1.4rem 0 0"><span class="ph-tag">send me your description for this one</span></p>
-        <div class="loaf__buy"><button class="btn btn--blush" type="button" data-add="olive">Add to basket <span class="arr">→</span></button></div>
+        <div class="loaf__buy"><button class="btn" type="button" data-add="olive">Add to basket <span class="arr">→</span></button></div>
       </div>
     </article>
   </div>
@@ -508,13 +487,13 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
           </div>
           <div class="pick">
             <div>
-              <h3>Black Olive Sourdough</h3>
+              <h3>Olive Sourdough</h3>
               <p class="pick__price">EGP 250</p>
             </div>
             <div class="step" data-step="olive">
-              <button type="button" data-d="-1" aria-label="One fewer Black Olive Sourdough" disabled>&minus;</button>
+              <button type="button" data-d="-1" aria-label="One fewer Olive Sourdough" disabled>&minus;</button>
               <output id="q-olive">0</output>
-              <button type="button" data-d="1" aria-label="One more Black Olive Sourdough">+</button>
+              <button type="button" data-d="1" aria-label="One more Olive Sourdough">+</button>
             </div>
           </div>
         </div>
@@ -640,8 +619,8 @@ const PRODUCTS = SETTINGS.products;
     el.innerHTML = once + once;
   };
   fill($("#strip"), Array(6).fill("slow rise ❀ warm heart ❀"));
-  fill($("#band"), ["Plain Sourdough ❀", "Black Olive Sourdough ❀", "Plain Sourdough ❀",
-                    "Black Olive Sourdough ❀", "Plain Sourdough ❀", "Black Olive Sourdough ❀"]);
+  fill($("#band"), ["Plain Sourdough ❀", "Olive Sourdough ❀", "Plain Sourdough ❀",
+                    "Olive Sourdough ❀", "Plain Sourdough ❀", "Olive Sourdough ❀"]);
 
   /* ── Image slots ──────────────────────────────────────────────
      Each <img> is pointed at assets/<name> and the loader finds the
@@ -649,10 +628,13 @@ const PRODUCTS = SETTINGS.products;
      shows its branded placeholder — never a broken image. */
   $$("[data-logo]").forEach(img => window.cozyImage(img, SETTINGS.images.logo, () => { img.hidden = true; }));
 
-  [["[data-loafcard]", "[data-hero-photo]"], ["[data-frame]", "[data-plain-photo]"]].forEach(([boxSel, imgSel]) => {
-    const box = $(boxSel), img = $(imgSel);
-    if (!box || !img) return;
-    window.cozyImage(img, SETTINGS.images.plainSourdough, () => { box.dataset.empty = "true"; });
+  [["[data-hero-photo]", "plainSourdough"],
+   ["[data-plain-photo]", "plainSourdough"],
+   ["[data-olive-photo]", "oliveSourdough"]].forEach(([imgSel, key]) => {
+    const img = $(imgSel);
+    if (!img) return;
+    const box = img.closest("[data-loafcard], [data-frame]");
+    window.cozyImage(img, SETTINGS.images[key], () => { if (box) box.dataset.empty = "true"; });
   });
 
   /* ── Reveals ─────────────────────────────────────────────── */
