@@ -18,8 +18,9 @@ a browser and the whole site works.
 
 ## Typography
 
-**Fraunces** (wonk axis open) for display, **Figtree** for everything practical,
-**Caveat** only for the ✎ editor notes.
+**Schoolbell** for every heading, price and the wordmark — the handwriting from
+the Instagram posts — and **Figtree** for the practical parts: buttons, form
+labels, inputs, anything a thumb has to hit or an eye has to scan quickly.
 
 ## Pages
 
@@ -162,7 +163,7 @@ site are rejected.
 ## Email templates
 
 Both live in `emails/` as table-layout HTML with inline styles and the brand
-colours. Fraunces and Figtree do not render in most mail clients, so Georgia
+colours. Schoolbell and Figtree do not render in most mail clients, so Georgia
 takes the display role and Arial the text role.
 
 Merge fields are `{{double_braced}}` so any sending service can fill them.

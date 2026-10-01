@@ -78,6 +78,12 @@ window.COZY_CONFIG = {
        serviceId          Email Services → the Gmail service
        customerTemplateId Email Templates → customer confirmation
        ownerTemplateId    Email Templates → order notification
+       ownerEmail         the inbox that receives every order
+
+     ownerEmail only takes effect once the owner template's "To Email"
+     field is set to {{to_email}} in the EmailJS dashboard. Leave that
+     field as a literal address and the template keeps winning, whatever
+     is written here.
 
      Until publicKey and serviceId are both set, no email is sent.
      Either way the customer sees a normal confirmation — sending is
@@ -97,6 +103,7 @@ window.COZY_CONFIG = {
     serviceId: "service_zhnqrif",
     customerTemplateId: "template_ouikh4b",
     ownerTemplateId: "template_k20t6sh",
+    ownerEmail: "thecozyloaf87@gmail.com",
 
     /* How long to wait for both emails before letting the customer
        through to their confirmation. The order is already saved, so
