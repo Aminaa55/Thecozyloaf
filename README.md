@@ -18,7 +18,7 @@ a browser and the whole site works.
 
 ## Typography
 
-**Schoolbell** for every heading, price and the wordmark — the handwriting from
+**Itim** for every heading, price and the wordmark — the handwriting from
 the Instagram posts — and **Figtree** for the practical parts: buttons, form
 labels, inputs, anything a thumb has to hit or an eye has to scan quickly.
 
@@ -163,7 +163,7 @@ site are rejected.
 ## Email templates
 
 Both live in `emails/` as table-layout HTML with inline styles and the brand
-colours. Schoolbell and Figtree do not render in most mail clients, so Georgia
+colours. Itim and Figtree do not render in most mail clients, so Georgia
 takes the display role and Arial the text role.
 
 Merge fields are `{{double_braced}}` so any sending service can fill them.

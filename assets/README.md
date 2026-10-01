@@ -53,3 +53,11 @@ Both are set in `index.html` on `.loafcard img` and `.frame img`.
 `olive-sourdough.jpg` — its own photograph, shot on the same near-black ground,
 so it sits in the same frame treatment as the Plain loaf. It has never borrowed
 the Plain Sourdough photo and must not.
+
+## loaf-mark.png
+
+The drawn olive loaf from the Instagram posts, cut out of a screenshot. The
+posts sit on the same #FDF4E3 as the hero, so the background keyed out cleanly
+by flooding from the edges — enclosed light areas inside the loaf stay opaque.
+Quantised to 128 colours: 363KB to 66KB with nothing visible lost. Decorative
+only; it carries an empty alt and hides itself if the file ever goes missing.

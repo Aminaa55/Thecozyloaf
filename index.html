@@ -7,7 +7,7 @@
 <meta name="description" content="The Cozy Loaf — sourdough, delivered in Cairo.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schoolbell&family=Figtree:ital,wght@0,300..900;1,400..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Itim&family=Figtree:ital,wght@0,300..900;1,400..600&display=swap">
 <style>
 /* ═══════════════════════════════════════════════════════════════
    THE COZY LOAF
@@ -31,9 +31,9 @@
   --sage-deep:#7E8D6C;
   --milk:#FDF4E3;
 
-  --display:"Schoolbell","Bradley Hand","Comic Sans MS",cursive;
+  --display:"Itim","Bradley Hand","Comic Sans MS",cursive;
   --ui:"Figtree","Helvetica Neue",Helvetica,Arial,sans-serif;
-  --hand:"Schoolbell","Bradley Hand","Comic Sans MS",cursive;
+  --hand:"Itim","Bradley Hand","Comic Sans MS",cursive;
 
   --gut:clamp(1.25rem,5vw,4rem);
   --maxw:82rem;
@@ -141,7 +141,13 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
 .hero{background:var(--milk);overflow:hidden;padding-block:clamp(1.5rem,5vw,3.5rem) clamp(1.75rem,5vw,3.5rem)}
 .hero__in{display:grid;gap:clamp(1rem,3.5vw,1.6rem);position:relative;z-index:1}
 .sprig{position:absolute;z-index:0;pointer-events:none;
-  right:.4rem;top:.6rem;width:clamp(4.8rem,18vw,6.4rem);transform:rotate(14deg)}
+  right:.4rem;top:.6rem;width:clamp(4.4rem,16vw,5.8rem);transform:rotate(14deg)}
+/* The drawn loaf from the posts, keeping the tool company. Decorative, so
+   it sits behind the content and never takes a tap. */
+.loafmark{position:absolute;z-index:0;pointer-events:none;
+  right:clamp(3.6rem,14vw,4.8rem);top:clamp(2.6rem,10vw,3.6rem);
+  width:clamp(6rem,24vw,8.5rem);transform:rotate(-4deg)}
+.loafmark[hidden]{display:none}
 .hero__logo{width:clamp(4.5rem,16vw,7rem);height:clamp(4.5rem,16vw,7rem);border-radius:50%;
   border:3.5px solid var(--espresso);object-fit:cover;background:var(--milk);box-shadow:5px 6px 0 var(--espresso)}
 .hero__logo[hidden]{display:none}
@@ -187,7 +193,8 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
   .stage{grid-area:stage}
   .hero__cta{grid-area:cta;align-self:start}
   .hero__cta .btn{flex:0 0 auto}
-  .sprig{right:auto;left:4%;top:9%;width:7.5rem}
+  .sprig{right:auto;left:4%;top:8%;width:7rem}
+  .loafmark{right:auto;left:11.5%;top:14%;width:13rem}
   .loafcard__img{aspect-ratio:5/4}
 }
 
@@ -385,6 +392,7 @@ section[id],#checkout,#receipt{scroll-margin-top:5.5rem}
             stroke="var(--espresso)" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
     </g>
   </svg>
+  <img class="loafmark" alt="" aria-hidden="true" data-loaf-mark>
   <div class="wrap hero__in">
     <img class="hero__logo" alt="The Cozy Loaf" data-logo>
     <h1 class="wordmark">The <span class="ital">Cozy</span><br>Loaf</h1>
@@ -626,6 +634,8 @@ const PRODUCTS = SETTINGS.products;
      real extension. A slot with no file behind it hides itself or
      shows its branded placeholder — never a broken image. */
   $$("[data-logo]").forEach(img => window.cozyImage(img, SETTINGS.images.logo, () => { img.hidden = true; }));
+
+  $$("[data-loaf-mark]").forEach(img => window.cozyImage(img, SETTINGS.images.loafMark, () => { img.hidden = true; }));
 
   [["[data-hero-photo]", "plainSourdough"],
    ["[data-plain-photo]", "plainSourdough"],
