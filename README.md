@@ -18,9 +18,9 @@ a browser and the whole site works.
 
 ## Typography
 
-**Itim** for every heading, price and the wordmark — the handwriting from
-the Instagram posts — and **Figtree** for the practical parts: buttons, form
-labels, inputs, anything a thumb has to hit or an eye has to scan quickly.
+**Itim** for the name, the product names, prices and every handwritten
+annotation; **Figtree** for descriptions, delivery information, form labels and
+inputs — anything a thumb has to hit or an eye has to scan quickly.
 
 ## Pages
 
@@ -185,3 +185,28 @@ upload them straight from GitHub.
 
 Olive Sourdough description · the logo file · storage/care wording if that
 section should return.
+
+## The visual system
+
+The Instagram is the brief. It has no containers: type and drawings sit on warm
+paper with air around them, and the brown reads as ink rather than as panels.
+So the site is one cream sheet from top to bottom. Nothing is in a card.
+
+- **Cream is the ground**, `#FDF4E3`, sampled from the posts. There are no
+  alternating colour sections; the only other field is `--paper`, a half-tone
+  used for the order slip.
+- **Brown is ink.** Lines, letters and marks — never a filled panel.
+- **Edges are drawn, not ruled.** Every border takes an irregular radius
+  (`--r-a`, `--r-b`, `--r-pill`), so no two corners of a box match.
+- **Photographs lie on the paper**, tilted a degree or two, with a hairline ink
+  edge and no shadow. Their black grounds read as prints pasted into a notebook.
+- **Drawn marks carry the structure** the old design got from coloured bands:
+  rules between chapters, an arrow at the price, a ring round a number, a lame
+  beside the loaves, a heart at the end. They live as `<symbol>`s in one block
+  at the top of `<body>`.
+
+A note on those symbols: a `<use>` clones into a shadow tree that document CSS
+cannot select into, but *inherited* properties do reach it. So the symbols
+carry their own `fill` / `stroke` / `stroke-width` attributes and the CSS sets
+only `color`. Setting `fill` or `stroke-width` on `.doodle` silently flattens
+every drawing.
