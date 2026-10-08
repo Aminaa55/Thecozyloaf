@@ -27,6 +27,8 @@
   --rust:#A8503A;           /* prices, the one filled label */
   --blush:#F4D5CB;
   --sage:#D6DFC9;
+  --sage-ink:#8C9B78;        /* a muted sage, for one hairline */
+  --blush-wash:#FBEAE2;      /* the one blush field on the page */
   --night:#0C0D11;          /* the photographs bring their own dark */
 
   --hand:"Itim","Bradley Hand","Comic Sans MS",cursive;
@@ -40,6 +42,8 @@
   --r-a:18px 11px 20px 13px / 13px 19px 12px 18px;
   --r-b:12px 20px 10px 18px / 17px 11px 20px 12px;
   --r-pill:26px 20px 24px 22px / 22px 25px 20px 24px;
+  /* a stamped tag: square enough to read as print, uneven enough to be drawn */
+  --r-tag:7px 4px 8px 5px / 5px 8px 4px 7px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -75,22 +79,27 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 [data-draw="in"] .swash path{stroke-dashoffset:0;transition:stroke-dashoffset 1.1s var(--pop) .15s}
 
 /* ── Labels (what used to be buttons) ─────────────────────────
-   A drawn outline with a hand's corners, not a moulded pill. The tap
-   area is never smaller than 48px and the text never smaller than
-   17px, because charm is not worth a missed tap. */
+   A printed tag: a near-rectangle with corners a stamp would make, and
+   a hairline ruled inside the edge the way a bakery label is printed.
+   Never under 48px, never under 17px — charm is not worth a missed tap. */
 .lbl{
+  position:relative;
   display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
   font-family:var(--hand);font-size:1.15rem;line-height:1;
-  min-height:48px;padding:.75rem 1.5rem;
-  border:2.5px solid var(--ink);border-radius:var(--r-pill);
+  min-height:48px;padding:.78rem 1.5rem;
+  border:2.5px solid var(--ink);border-radius:var(--r-tag);
   background:transparent;color:var(--ink);text-decoration:none;cursor:pointer;
   transition:transform .18s var(--pop), background .18s, color .18s;
 }
-.lbl:hover,.lbl:focus-visible{transform:rotate(-.8deg) translateY(-2px);background:var(--blush)}
-.lbl:active{transform:translateY(1px) rotate(.3deg)}
+.lbl::after{content:"";position:absolute;inset:3px;border:1px solid currentColor;
+  border-radius:calc(var(--r-tag) - 2px);opacity:.3;pointer-events:none}
+.lbl:hover,.lbl:focus-visible{transform:translateY(-2px) rotate(-.5deg);background:var(--blush)}
+.lbl:active{transform:translateY(1px)}
 .lbl--ink{background:var(--rust);border-color:var(--rust);color:var(--cream)}
+.lbl--ink::after{opacity:.45}
 .lbl--ink:hover,.lbl--ink:focus-visible{background:var(--ink);border-color:var(--ink);color:var(--cream)}
-.lbl--sm{min-height:44px;padding:.55rem 1.05rem;font-size:1rem;border-width:2px;border-radius:var(--r-b)}
+.lbl--sm{min-height:44px;padding:.58rem 1.05rem;font-size:1rem;border-width:2px}
+.lbl--sm::after{inset:2px}
 .lbl[disabled]{cursor:not-allowed;transform:none;background:transparent;
   border-color:rgba(146,74,35,.35);border-style:dashed;color:var(--ink-soft);opacity:.85}
 .lbl .nib{width:1.15em;height:.75em;flex:none}
@@ -117,19 +126,16 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 .head__rule path{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;opacity:.42;vector-effect:non-scaling-stroke}
 
 /* ── Hero ─────────────────────────────────────────────────────
-   Mobile is the composition, not a stack of the desktop one: an
-   eyebrow, the name, the photograph tilted off-square, a price
-   written beside it, and one thing to press. */
-.hero{position:relative;padding-block:clamp(1.1rem,4vw,2.4rem) clamp(1.6rem,5vw,3rem)}
+   The name, then the bread, then one thing to press. The name stays
+   large; what came out is everything that used to sit above it. */
+.hero{position:relative;padding-block:clamp(.6rem,2.5vw,1.4rem) clamp(1.4rem,4vw,2.2rem)}
 .hero__in{display:grid;grid-template-areas:"text" "shot" "do";gap:0}
 .hero__text{grid-area:text}
 .shot{grid-area:shot}
 .hero__do{grid-area:do}
-.hero__eyebrow{display:flex;align-items:center;gap:.5rem;margin:0 0 .7rem}
-.hero__eyebrow .doodle{width:1.25rem;height:2rem;flex:none;color:var(--ink-soft)}
-.wordmark{font-size:clamp(3rem,15vw,5.6rem);line-height:.98}
+.wordmark{font-size:clamp(3rem,15.5vw,6.2rem);line-height:.94}
 .wordmark .u{display:inline-block;position:relative;padding-bottom:.14em}
-.shot{position:relative;margin-top:clamp(1.1rem,4vw,1.8rem)}
+.shot{position:relative;margin-top:clamp(.85rem,3vw,1.3rem);max-width:30rem}
 .shot__img{
   position:relative;overflow:hidden;background:var(--night);
   border:2.5px solid var(--ink);border-radius:var(--r-a);
@@ -141,66 +147,85 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 .shot__fb p{font-family:var(--hand);font-size:1.3rem;margin:0}
 [data-empty="true"] .shot__img img{display:none}
 [data-empty="true"] .shot__fb{display:grid}
-/* The price, written beside the loaf and pointing at it. */
-.pricetag{position:absolute;right:.1rem;bottom:-2.1rem;z-index:2;display:flex;align-items:flex-end;gap:.25rem;
-  transform:rotate(-2.5deg)}
-.pricetag .doodle{width:2.5rem;height:2.1rem;margin-bottom:.1rem;transform:scaleY(-1) rotate(12deg)}
-.pricetag b{font-family:var(--hand);font-weight:400;font-size:1.5rem;line-height:1.05;color:var(--rust);
-  background:var(--cream);padding:.1rem .35rem;white-space:nowrap}
-.hero__do{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:clamp(2.2rem,7vw,2.8rem)}
-/* The drawn loaf and the lame, sitting in the margin like a sketch. */
-.margin-art{display:flex;align-items:flex-end;gap:.4rem;margin-top:1.4rem}
-.margin-art img{width:clamp(5.5rem,22vw,7.5rem);transform:rotate(-3deg)}
-.margin-art img[hidden]{display:none}
-.margin-art .doodle{width:clamp(2.6rem,10vw,3.4rem);height:auto;margin-bottom:.3rem}
+/* The price, written on the paper just under the photograph — never
+   over it, which would patch a pale rectangle into the loaf. */
+.pricetag{margin:.55rem 0 0 .35rem;transform:rotate(-1.4deg)}
+.pricetag b{font-family:var(--hand);font-weight:400;font-size:1.4rem;line-height:1.05;color:var(--rust);
+  white-space:nowrap}
+.hero__do{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:clamp(1.5rem,5vw,2rem)}
+
+/* On a phone the photograph is capped against the screen itself, so the
+   order button stays on the first screen even on an SE. Scoped to the
+   phone layout: a short desktop window must never inherit this cap. */
+@media (max-width:61.99rem){
+  @supports (height:1svh){
+    .shot__img{max-height:40svh}
+  }
+}
+@media (max-width:48rem) and (max-height:680px){
+  .wordmark{font-size:clamp(2.4rem,12vw,3.4rem)}
+  .hero{padding-block:.7rem 1.1rem}
+  .hero__do{margin-top:1.6rem}
+}
+/* An SE has about 553px to play with once Safari has taken its share. */
+@media (max-width:48rem) and (max-height:600px){
+  .wordmark{font-size:clamp(2.1rem,10.5vw,2.9rem)}
+  .hero__do{margin-top:1.15rem}
+  @supports (height:1svh){ .shot__img{max-height:31svh} }
+}
 
 /* ── Divider between chapters ─────────────────────────────── */
-.chapter{display:flex;align-items:center;gap:.9rem;margin-block:clamp(2.6rem,9vw,4.5rem) clamp(1.4rem,5vw,2rem)}
+.chapter{display:flex;align-items:center;gap:.9rem;margin-block:clamp(2rem,7vw,3rem) clamp(1rem,3.5vw,1.4rem)}
 .chapter h2{font-size:clamp(1.6rem,6vw,2.3rem);white-space:nowrap}
-.chapter__mark{width:clamp(1.9rem,7vw,2.5rem);height:auto;flex:none;transform:rotate(6deg)}
 .chapter .rule{flex:1;min-width:2rem}
 
 /* ── The loaves ───────────────────────────────────────────────
    Two entries in a notebook, not two cells in a grid. Each is laid
    out a little differently so the page never looks ruled. */
-.entry{position:relative;margin-top:clamp(1.4rem,5vw,2.2rem)}
-.entry + .entry{margin-top:clamp(4.6rem,16vw,6.5rem)}
-.entry__shot{position:relative}
-.entry:nth-child(odd) .entry__shot{margin-right:clamp(1.2rem,11vw,4rem)}
-.entry:nth-child(even) .entry__shot{margin-left:clamp(1.2rem,11vw,4rem)}
+.entry{position:relative;margin-top:clamp(1rem,3.5vw,1.5rem)}
+.entry + .entry{margin-top:clamp(2.6rem,9vw,3.6rem)}
+.entry__shot{position:relative;max-width:30rem}
+.entry:nth-of-type(odd) .entry__shot{margin-right:clamp(1.2rem,11vw,4rem)}
+.entry:nth-of-type(even) .entry__shot{margin-left:clamp(1.2rem,11vw,4rem)}
 .entry__shot .frame{
   position:relative;overflow:hidden;background:var(--night);
   border:2.5px solid var(--ink);border-radius:var(--r-a);aspect-ratio:4/5;
 }
 .entry__shot .frame img{width:100%;height:100%;object-fit:cover;object-position:center 58%}
-.entry:nth-child(odd) .entry__shot .frame{transform:rotate(-1.5deg)}
-.entry:nth-child(even) .entry__shot .frame{transform:rotate(1.5deg)}
+.entry:nth-of-type(odd) .entry__shot .frame{transform:rotate(-1.5deg)}
+.entry:nth-of-type(even) .entry__shot .frame{transform:rotate(1.5deg)}
 .entry__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:1.5rem;background:var(--paper)}
 .entry__fb p{font-family:var(--hand);font-size:1.35rem;margin:0}
 .frame[data-empty="true"] > img{display:none}
 .frame[data-empty="true"] .entry__fb{display:grid}
-.entry__body{margin-top:clamp(1.5rem,6vw,2rem)}
+.entry__body{margin-top:clamp(1.1rem,4vw,1.5rem)}
 .entry__name{font-size:clamp(2.1rem,9vw,3rem)}
-/* The price as a written annotation with a ring round it. */
-.ring{position:relative;display:inline-block;margin-top:.7rem;padding:.3rem .95rem .35rem}
-.ring b{position:relative;z-index:1;font-family:var(--hand);font-weight:400;font-size:1.45rem;color:var(--rust)}
-.ring small{position:relative;z-index:1;font-family:var(--ui);font-size:.82rem;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink-soft);margin-left:.4rem}
-.ring .doodle{position:absolute;inset:-6% -4%;width:108%;height:112%}
-.ring .doodle{color:var(--rust);opacity:.8}
-.entry__desc{font-size:1.08rem;line-height:1.7;max-width:36ch;margin:1.1rem 0 0;color:var(--ink-soft)}
-.entry__buy{margin-top:1.5rem}
+/* A price is written, not boxed. Exactly one on the page is ringed —
+   the entry with no description, which needs the extra weight. */
+.price{display:flex;align-items:baseline;gap:.45rem;margin-top:.6rem}
+.price b{font-family:var(--hand);font-weight:400;font-size:1.5rem;color:var(--rust)}
+.price small{font-family:var(--ui);font-size:.82rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-soft)}
+.price--ringed{position:relative;display:inline-flex;padding:.32rem 1rem .36rem;margin-left:.3rem}
+.price--ringed .doodle{position:absolute;inset:-8% -2%;width:104%;height:116%;color:var(--rust);opacity:.75}
+.price--ringed b,.price--ringed small{position:relative;z-index:1}
+.entry__desc{font-size:1.08rem;line-height:1.65;max-width:34ch;margin:.85rem 0 0;color:var(--ink-soft)}
+.entry__buy{margin-top:1.2rem}
 /* The drawn loaf appears beside its own entry. */
-.entry__sketch{position:absolute;left:-1.5rem;top:-2.2rem;width:clamp(5.5rem,23vw,7.5rem);
-  pointer-events:none;z-index:2;transform:rotate(-7deg)}
+/* The drawn loaf from the posts sits over the corner of the photograph of
+   the same loaf. The lame sits beside the one it scores. Each appears once. */
+.entry__sketch{position:absolute;right:-.7rem;bottom:-1.9rem;width:clamp(5.8rem,24vw,8rem);
+  pointer-events:none;z-index:2;transform:rotate(-6deg)}
 .entry__sketch img{width:100%}
+.entry__tool{position:absolute;right:-.6rem;bottom:-2.4rem;width:clamp(3.2rem,11vw,4.4rem);height:auto;
+  pointer-events:none;z-index:2;color:var(--ink);transform:rotate(-9deg)}
 .entry__sketch img[hidden]{display:none}
 
 /* ── The order slip ───────────────────────────────────────────
    One sheet, the way a bakery writes an order down: rows, a ruled
    line, a total under it. Not a dashboard. */
 .slip{
-  position:relative;margin-top:clamp(1.4rem,5vw,2rem);
+  position:relative;margin-top:clamp(1rem,3.5vw,1.5rem);
   background:var(--paper);border:2.5px solid var(--ink);border-radius:var(--r-a);
   padding:clamp(1.15rem,4.5vw,2rem);
 }
@@ -210,7 +235,7 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 .slip__head span{font-family:var(--hand);font-size:.98rem;color:var(--ink-soft)}
 .slip__notes{display:grid;gap:.45rem;margin:.85rem 0 1.1rem;padding:0;list-style:none}
 .slip__notes li{display:flex;gap:.55rem;align-items:flex-start;font-size:.97rem;line-height:1.5;color:var(--ink-soft)}
-.slip__notes .doodle{width:.5rem;height:.5rem;flex:none;margin-top:.52rem;color:var(--rust)}
+.slip__notes .doodle{width:.5rem;height:.5rem;flex:none;margin-top:.52rem;color:var(--sage-ink)}
 
 .row{display:flex;align-items:center;gap:.85rem;padding-block:.95rem;border-bottom:2px dotted rgba(146,74,35,.3)}
 .row:first-of-type{border-top:0}
@@ -220,7 +245,7 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 /* Quantity: two drawn circles and a written number. */
 .step{display:flex;align-items:center;gap:.15rem;flex:none}
 .step button{
-  width:44px;height:44px;flex:none;border:2.5px solid var(--ink);border-radius:50%;
+  width:46px;height:46px;flex:none;border:2.5px solid var(--ink);border-radius:50%;
   background:transparent;color:var(--ink);font-family:var(--hand);font-size:1.5rem;line-height:1;
   cursor:pointer;display:grid;place-content:center;transition:background .18s,transform .18s var(--pop);
 }
@@ -244,73 +269,106 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 
 /* ── Delivery details ─────────────────────────────────────────
    Ruled lines to write on, not moulded input boxes. */
-.checkout{margin-top:clamp(1.4rem,5vw,2rem);display:none}
+.checkout{margin-top:clamp(1.3rem,4vw,1.7rem);padding-top:clamp(1.3rem,4vw,1.7rem);
+  border-top:2px dashed rgba(146,74,35,.4);display:none}
 .checkout[data-open="true"]{display:block;animation:lift .4s var(--pop) both}
 @keyframes lift{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
 .checkout h3{font-size:1.65rem}
 .checkout__promise{margin:.35rem 0 0;font-size:.97rem;color:var(--ink-soft)}
-.fields{display:grid;gap:1.15rem;margin-top:1.5rem}
-.field{display:flex;flex-direction:column;gap:.35rem}
-.field label{font-family:var(--ui);font-weight:800;font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.fields{display:grid;gap:.95rem;margin-top:1.2rem}
+.field{display:flex;flex-direction:column;gap:.15rem}
+.field label{font-family:var(--ui);font-weight:800;font-size:.82rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:.1rem}
 .field label .opt{font-weight:600;letter-spacing:0;text-transform:none}
 .field input,.field select,.field textarea{
   font-family:var(--ui);font-size:1.0625rem;color:var(--ink);
-  background:rgba(255,253,246,.6);
-  border:0;border-bottom:2.5px solid rgba(146,74,35,.45);border-radius:3px 3px 0 0;
-  padding:.6rem .6rem .5rem;width:100%;min-height:46px;transition:border-color .18s, background .18s;
+  background:transparent;
+  border:0;border-bottom:2px solid rgba(146,74,35,.5);border-radius:0;
+  padding:.62rem .1rem .28rem;width:100%;min-height:44px;transition:border-color .18s;
 }
-.field textarea{resize:vertical;min-height:4.6rem;line-height:1.6}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--rust);background:#FFFDF7}
+.field textarea{resize:vertical;min-height:3.3rem;padding-top:.4rem;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;
+  border-bottom-color:var(--rust);border-bottom-width:2.5px;box-shadow:0 1px 0 var(--rust)}
 .field select{appearance:none;cursor:pointer;
   background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%);
-  background-position:calc(100% - 16px) calc(50% + 1px),calc(100% - 10px) calc(50% + 1px);
-  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:2rem}
+  background-position:calc(100% - 10px) calc(50% + 1px),calc(100% - 4px) calc(50% + 1px);
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:1.6rem}
 .field select optgroup{font-family:var(--ui);font-weight:800;color:var(--rust)}
 .field select option{font-weight:400;color:var(--ink)}
 .field input::placeholder,.field textarea::placeholder{color:rgba(138,94,53,.6)}
 .field small{font-size:.88rem;color:var(--ink-soft);line-height:1.45}
-.field .err{font-family:var(--ui);font-size:.88rem;font-weight:700;color:var(--rust);min-height:1.1rem;margin:0}
+.field .err{font-family:var(--ui);font-size:.88rem;font-weight:700;color:var(--rust);min-height:0;margin:0}
+.field--bad .err{min-height:1.1rem;margin-top:.15rem}
 .field--bad input,.field--bad select,.field--bad textarea{border-bottom-color:var(--rust)}
-.checkout__foot{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-top:1.9rem}
+.checkout__foot{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-top:1.6rem}
 .checkout__foot .lbl--ink{flex:1 1 14rem}
 .formnote{margin:0;font-family:var(--ui);font-weight:700;font-size:.92rem;color:var(--rust)}
 
 /* ── The end of the note ──────────────────────────────────────
-   Signed off the way the posts are: a small heart, the handle. */
-.signoff{text-align:center;padding-block:clamp(2.8rem,10vw,4.5rem) clamp(2.4rem,8vw,3.5rem)}
-.signoff .doodle{width:2rem;height:1.8rem;margin:0 auto 1rem}
-.signoff img.logo{width:4.5rem;margin:0 auto 1rem}
-.signoff img.logo[hidden]{display:none}
-.signoff h2{font-size:clamp(1.5rem,6vw,2.1rem)}
-.signoff .handle{display:inline-block;font-family:var(--hand);font-size:1.3rem;color:var(--ink);
-  text-decoration:none;margin-top:1rem;padding:.45rem .3rem;transition:transform .22s var(--pop),color .2s}
-.signoff .handle:hover{transform:rotate(-2deg);color:var(--rust)}
-.signoff p{margin:.5rem 0 0;font-size:.95rem;color:var(--ink-soft)}
+   The back of a paper bag: one printed label, the heart and the handle
+   the posts sign off with, and the only blush on the page. The logo
+   slot sits at the top of it, empty and reserved, until the file lands. */
+.signoff{padding-block:clamp(2.4rem,8vw,3.6rem) clamp(2.2rem,7vw,3.4rem)}
+.stamp{
+  position:relative;max-width:27rem;margin-inline:auto;text-align:center;
+  background:var(--blush-wash);border:2.5px solid var(--ink);border-radius:var(--r-tag);
+  padding:clamp(1.5rem,6vw,2.1rem) clamp(1.2rem,5vw,2rem);
+}
+.stamp::after{content:"";position:absolute;inset:5px;border:1px solid var(--ink);
+  border-radius:calc(var(--r-tag) - 2px);opacity:.35;pointer-events:none}
+.stamp > *{position:relative;z-index:1}
+.stamp__logo{width:4.6rem;margin:0 auto .85rem}
+.stamp__logo[hidden]{display:none}
+.stamp .doodle{width:1.7rem;height:1.5rem;margin:0 auto .85rem;color:var(--ink)}
+.stamp h2{font-size:clamp(1.45rem,5.5vw,1.9rem)}
+.stamp__rule{display:block;width:5.5rem;height:8px;margin:.9rem auto .7rem;overflow:visible}
+.stamp__rule path{fill:none;stroke:var(--sage-ink);stroke-width:2;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.stamp .handle{display:inline-block;font-family:var(--hand);font-size:1.25rem;color:var(--ink);
+  text-decoration:none;padding:.4rem .3rem;transition:transform .22s var(--pop),color .2s}
+.stamp .handle:hover{transform:rotate(-2deg);color:var(--rust)}
+.stamp p.fine{margin:.15rem 0 0;font-size:.95rem;color:var(--ink-soft)}
 
 /* ── Desktop ──────────────────────────────────────────────────
    The phone layout opens out; it is not replaced. Two columns only
    where a column genuinely helps, and the tilts stay. */
 @media (min-width:62rem){
-  .hero{padding-block:clamp(2rem,4vw,3.5rem) clamp(3rem,6vw,4.5rem)}
-  .hero__in{grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);
-    grid-template-areas:"text shot" "do shot" ". shot";
-    grid-template-rows:auto auto 1fr;
-    column-gap:clamp(2.5rem,6vw,5rem);align-items:start;row-gap:clamp(1.6rem,3vw,2.2rem)}
+  /* The hero is one composition held in the middle of the screen: the
+     photograph takes the larger share, the name and the button sit
+     against it, and the price is written into the gap between them.
+     No row is left over to go empty. */
+  .hero{padding-block:clamp(1.6rem,3vw,2.6rem) clamp(1.8rem,3.5vw,2.6rem)}
+  .hero__in{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);
+    grid-template-areas:"text shot" "do shot";
+    grid-template-rows:auto auto;
+    column-gap:clamp(2rem,4.5vw,3.5rem);
+    align-items:start;row-gap:clamp(1.2rem,2vw,1.7rem)}
   .hero__text{align-self:end}
-  .shot{margin-top:0;align-self:center}
-  .shot__img{aspect-ratio:4/5}
+  .shot{margin-top:0;align-self:center;grid-row:1/span 2;max-width:26rem;margin-left:auto}
+  /* The name commands its column instead of sitting in the middle of it. */
+  .wordmark{font-size:clamp(3.4rem,8.6vw,8.2rem)}
+  .shot__img{aspect-ratio:1/1;transform:rotate(-1.1deg)}
   .hero__do{align-self:start}
+  .pricetag{margin:.7rem 0 0 .5rem}
+  .pricetag b{font-size:1.5rem}
 
-  .entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    column-gap:clamp(2.5rem,6vw,4.5rem);align-items:center}
-  .entry:nth-child(even) .entry__shot{order:2}
+  /* Product entries interlock: the photograph is the larger column and
+     the writing hangs back into its gutter instead of floating away. */
+  .entry{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+    column-gap:clamp(2rem,4vw,3.4rem);align-items:center}
+  .entry:nth-of-type(even){grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)}
+  .entry:nth-of-type(even) .entry__shot{order:2}
+  .entry__shot{max-width:26rem}
+  .entry:nth-of-type(odd) .entry__shot{margin-right:0}
+  .entry:nth-of-type(even) .entry__shot{margin-left:auto;margin-right:0}
   .entry__body{margin-top:0}
-  .entry__shot .frame{aspect-ratio:4/5}
+  .entry__shot .frame{aspect-ratio:1/1}
+  .entry__shot .frame img{object-position:center 68%}
+  .entry__name{font-size:clamp(2.1rem,3.4vw,3rem)}
 
-  .slip{padding:clamp(2rem,3vw,2.6rem)}
+  .slip{padding:clamp(1.8rem,2.6vw,2.3rem)}
   .slip__body{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(18rem,.85fr);
-    column-gap:clamp(2rem,4vw,3rem);align-items:start}
-  .tally{margin-top:0;padding-left:clamp(1.5rem,3vw,2.2rem);border-left:2px dashed rgba(146,74,35,.4)}
+    column-gap:clamp(1.8rem,3.5vw,2.6rem);align-items:start}
+  .tally{margin-top:0;padding-left:clamp(1.4rem,2.5vw,2rem);border-left:2px dashed rgba(146,74,35,.4)}
   .fields--2{grid-template-columns:1fr 1fr}
   .checkout__foot .lbl--ink{flex:0 0 auto}
 }
@@ -336,12 +394,10 @@ section[id],#checkout{scroll-margin-top:5.6rem}
   [data-reveal]{opacity:1 !important;transform:none !important}
   [data-draw] .swash path{stroke-dashoffset:0 !important}
 }
-
 /* ── Confirmation ─────────────────────────────────────────────
    The same sheet of paper, with the order written onto it. */
 .conf{padding-block:clamp(1.8rem,7vw,3.5rem) clamp(2rem,7vw,3.5rem)}
 .conf__head{text-align:center;margin-bottom:clamp(1.6rem,6vw,2.4rem)}
-.conf__head .doodle{width:2.2rem;height:2.6rem;margin:0 auto .7rem;color:var(--ink-soft)}
 .conf__head h1{font-size:clamp(2.2rem,9vw,3.2rem)}
 .conf__ref{display:inline-block;margin-top:.9rem;font-family:var(--hand);font-size:1.3rem;color:var(--rust);
   border:2.5px solid var(--rust);border-radius:var(--r-b);padding:.3rem 1rem;transform:rotate(-1.4deg)}
@@ -377,13 +433,6 @@ section[id],#checkout{scroll-margin-top:5.6rem}
   </symbol>
   <symbol id="d-heart" viewBox="0 0 32 28">
     <path fill="currentColor" d="M16 26.5 C5.6 18 1.5 12.2 1.5 7.9 C1.5 4 4.4 1 8.3 1 C11.4 1 14.2 3 16 6.1 C17.8 3 20.6 1 23.7 1 C27.6 1 30.5 4 30.5 7.9 C30.5 12.2 26.4 18 16 26.5Z"/>
-  </symbol>
-  <symbol id="d-wheat" viewBox="0 0 28 46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14 44 L14 21"/>
-    <path d="M14 21 C7.5 20 4.5 15.5 5.5 10 C11 11 14 15 14 21Z"/>
-    <path d="M14 21 C20.5 20 23.5 15.5 22.5 10 C17 11 14 15 14 21Z"/>
-    <path d="M14 13.5 C8.5 12.5 5.8 8.3 6.8 3.5 C11.8 4.8 14 8.6 14 13.5Z"/>
-    <path d="M14 13.5 C19.5 12.5 22.2 8.3 21.2 3.5 C16.2 4.8 14 8.6 14 13.5Z"/>
   </symbol>
   <symbol id="d-dot" viewBox="0 0 16 16">
     <path fill="currentColor" d="M8 1 C11.9 1.4 15 4.3 15 8.2 C15 12 11.6 15 7.8 15 C4 15 1 11.8 1 8 C1 4.2 4.1 1.3 8 1Z"/>
@@ -425,7 +474,6 @@ section[id],#checkout{scroll-margin-top:5.6rem}
 
     <div id="found" hidden>
       <div class="conf__head">
-        <svg class="doodle" viewBox="0 0 28 46" aria-hidden="true"><use href="#d-wheat"/></svg>
         <img class="logo" alt="" data-logo hidden>
         <h1>Order <span class="ital">received</span></h1>
         <p><span class="conf__ref" id="ref"></span></p>
@@ -463,10 +511,16 @@ section[id],#checkout{scroll-margin-top:5.6rem}
 
 <footer class="signoff">
   <div class="wrap">
-    <svg class="doodle" viewBox="0 0 32 28" aria-hidden="true"><use href="#d-heart"/></svg>
-    <h2>Slow rise, <span class="ital">warm heart.</span></h2>
-    <p><a class="handle" href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
-    <p>Delivery across the areas listed at checkout</p>
+    <div class="stamp">
+      <img class="stamp__logo" alt="" data-logo>
+      <svg class="doodle" viewBox="0 0 32 28" aria-hidden="true"><use href="#d-heart"/></svg>
+      <h2>Slow rise, <span class="ital">warm heart.</span></h2>
+      <svg class="stamp__rule" viewBox="0 0 88 8" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M2 4.5 C20 2 38 6.5 56 3.5 C68 1.8 80 5.5 86 4"/>
+      </svg>
+      <p><a class="handle" href="https://instagram.com/thecozyloaf_eg" target="_blank" rel="noopener">@thecozyloaf_eg</a></p>
+      <p class="fine">Delivery across the areas listed at checkout</p>
+    </div>
   </div>
 </footer>
 
