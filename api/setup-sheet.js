@@ -37,6 +37,12 @@ const HEADERS = [
 
 const STATUSES = ["New", "Confirmed", "Baking", "Out for Delivery", "Delivered", "Cancelled"];
 
+/* Derived from the header list rather than written out, because the two
+   drifting apart is exactly what happened when the delivery date column
+   was added: the headers grew to sixteen and the range they were written
+   into stayed at fifteen, and Google refused the write. */
+const LAST_COLUMN = String.fromCharCode(65 + HEADERS.length - 1);
+
 /* The window figures compare ISO date text, which sorts chronologically,
    so no date parsing is needed anywhere. SUMPRODUCT is used rather than
    SUMIFS because SUMIFS criteria that look like dates can be coerced to
@@ -168,7 +174,7 @@ function formatRequests(ordersId, dashId, existingCharts) {
     fields: "gridProperties.frozenRowCount"
   }});
   req.push({ repeatCell: {
-    range: { sheetId: ordersId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 16 },
+    range: { sheetId: ordersId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: HEADERS.length },
     cell: { userEnteredFormat: {
       backgroundColor: PAPER,
       textFormat: { bold: true, foregroundColor: INK },
@@ -217,7 +223,7 @@ function formatRequests(ordersId, dashId, existingCharts) {
   /* The editable status. An unbounded range means every future row
      inherits the dropdown the moment it is appended. */
   req.push({ setDataValidation: {
-    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 15, endColumnIndex: 16 },
+    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: HEADERS.length - 1, endColumnIndex: HEADERS.length },
     rule: {
       condition: { type: "ONE_OF_LIST", values: STATUSES.map(s => ({ userEnteredValue: s })) },
       strict: true,
@@ -340,9 +346,9 @@ module.exports = async function handler(req, res) {
     const charts = (tabs[DASH].charts || []).map(c => (c.spec || {}).title).filter(Boolean);
 
     /* Headers. Row 1 only — order rows are never touched. */
-    await sheets("PUT", "/values/" + encodeURIComponent(ORDERS + "!A1:O1") +
+    await sheets("PUT", "/values/" + encodeURIComponent(ORDERS + "!A1:" + LAST_COLUMN + "1") +
       "?valueInputOption=RAW", { values: [HEADERS] });
-    done.push("Wrote the 15 column headers on " + ORDERS);
+    done.push("Wrote the " + HEADERS.length + " column headers on " + ORDERS);
 
     /* Formulas. USER_ENTERED so Sheets parses them as formulas. */
     await sheets("POST", "/values:batchUpdate", {
@@ -378,4 +384,5 @@ module.exports = async function handler(req, res) {
   }
 };
 
-module.exports.__test = { dashboardValues: dashboardValues, formatRequests: formatRequests, HEADERS: HEADERS, STATUSES: STATUSES };
+module.exports.__test = { dashboardValues: dashboardValues, formatRequests: formatRequests,
+  HEADERS: HEADERS, STATUSES: STATUSES, LAST_COLUMN: LAST_COLUMN };

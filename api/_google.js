@@ -261,9 +261,15 @@ function describe(name) {
     ["END PRIVATE KEY", /-----END [A-Z ]*PRIVATE KEY-----/]
   ].filter(m => m[1].test(value)).map(m => m[0]);
 
+  /* The advice about the file only belongs on the variable that wants
+     the file. A spreadsheet id is a plain string and reporting it as a
+     malformed JSON document would send someone looking for a problem
+     that is not there. */
+  const wantsFile = name === "GOOGLE_SERVICE_ACCOUNT_JSON";
   return name + ": " + shape +
-    (marks.length ? ", contains " + marks.join(" + ") : ", none of the expected landmarks in it") +
-    " \u2014 the whole file is needed, from the opening { to the closing }";
+    (marks.length ? ", contains " + marks.join(" + ")
+                  : (wantsFile ? ", none of the expected landmarks in it" : "")) +
+    (wantsFile ? " \u2014 the whole file is needed, from the opening { to the closing }" : "");
 }
 
 function credentialReport() {
