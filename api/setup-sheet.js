@@ -20,7 +20,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 const crypto = require("node:crypto");
-const { sheets } = require("./_google.js");
+const { sheets, credentialReport } = require("./_google.js");
 
 const ORDERS = (process.env.ORDER_SHEET_TAB || "Orders").trim();
 const DASH = "Dashboard";
@@ -370,6 +370,9 @@ module.exports = async function handler(req, res) {
       "Setup did not finish.\n\n" +
       (done.length ? done.map(d => "  ✓ " + d).join("\n") + "\n\n" : "") +
       "  ✗ " + err.message + "\n\n" +
+      "What this deployment can see\n" +
+      "(lengths and first/last characters only \u2014 no secret is printed):\n\n" +
+      credentialReport().map(line => "  \u00b7 " + line).join("\n") + "\n\n" +
       "Nothing was lost — fix the problem and open this link again.\n"
     );
   }

@@ -201,7 +201,56 @@ async function sheets(method, path, body) {
   return json;
 }
 
-module.exports = { accessToken, sheets, spreadsheetId };
+/* ── What did we actually get? ─────────────────────────────────
+   A value that is set but unusable, and a value that was never set at
+   all, produce the same failure from the outside, and the console
+   warning that tells them apart is not visible to whoever is doing the
+   setting up. This reports the shape of each variable — whether it is
+   present, how long it is, how it begins and ends — so the difference
+   between "not saved", "pasted half", and "pasted something else" is
+   visible on the page.
+
+   No secret value is ever included: lengths and the first and last few
+   characters of a JSON wrapper only, never any part of the key. */
+function describe(name) {
+  const raw = process.env[name];
+  if (raw === undefined) return name + ": not set";
+  const value = raw.trim();
+  if (!value) return name + ": set but empty";
+
+  const shape = value.length + " characters, starts " + JSON.stringify(value.slice(0, 1)) +
+    ", ends " + JSON.stringify(value.slice(-1));
+
+  if (value.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(value);
+      const has = [];
+      if (parsed.private_key) has.push("private_key");
+      if (parsed.client_email) has.push("client_email");
+      if (parsed.project_id) has.push("project_id");
+      return name + ": valid JSON, " + shape +
+        (has.length ? ", contains " + has.join(" + ") : ", but none of the expected fields");
+    } catch (e) {
+      return name + ": starts like JSON but will not parse (" + e.message + "), " + shape +
+        " — the whole file is needed, from the opening { to the closing }";
+    }
+  }
+  if (/^-----BEGIN/.test(value)) return name + ": looks like a PEM key, " + shape;
+  return name + ": " + shape;
+}
+
+function credentialReport() {
+  return [
+    "GOOGLE_SERVICE_ACCOUNT_JSON",
+    "GOOGLE_PRIVATE_KEY",
+    "GOOGLE_PRIVATE_KEY_B64",
+    "GOOGLE_SERVICE_ACCOUNT_EMAIL",
+    "GOOGLE_SHEETS_SPREADSHEET_ID",
+    "ORDER_SHEET_TAB"
+  ].map(describe);
+}
+
+module.exports = { accessToken, sheets, spreadsheetId, credentialReport };
 
 /* For the local test harness; Vercel ignores extra keys. */
 module.exports.__reset = () => { cachedToken = null; serviceJson = undefined; };
