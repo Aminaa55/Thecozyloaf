@@ -555,10 +555,13 @@ window.renderConfirmation = function () {
   $("#items").innerHTML = order.items.map(i =>
     '<div class="item"><dt>' + i.quantity + " \u00d7 " + esc(i.name) + "</dt><dd>" + egp(i.lineTotal) + "</dd></div>").join("");
 
+  /* The same three lines as the confirmation email, worded the same way.
+     Only the loaves have a figure: delivery is quoted per address
+     afterwards, so naming any total here would name the wrong one. */
   $("#totals").innerHTML =
-    "<div><dt>Subtotal</dt><dd>" + egp(order.subtotal) + "</dd></div>" +
+    "<div><dt>Product subtotal</dt><dd>" + egp(order.subtotal) + "</dd></div>" +
     '<div class="muted"><dt>Delivery fee</dt><dd>To be confirmed</dd></div>' +
-    '<div class="tot"><dt>Total before delivery</dt><dd>' + egp(order.totalBeforeDelivery) + "</dd></div>";
+    '<div class="tot"><dt>Final total</dt><dd>To be confirmed</dd></div>';
 
   /* The delivery date leads, because it is the one thing the customer
      will come back to this page to check. Rows with nothing in them
