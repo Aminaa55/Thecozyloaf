@@ -54,6 +54,25 @@ Both are set in `index.html` on `.loafcard img` and `.frame img`.
 so it sits in the same frame treatment as the Plain loaf. It has never borrowed
 the Plain Sourdough photo and must not.
 
+## Black Olive Sourdough
+
+Two files, and the distinction matters.
+
+- **`black-olive-sourdough.jpg` — the original photograph.** The owner's own
+  shot: the loaf in a basket on white wrapping paper, against the pale grey
+  wall it was actually photographed against. **This file must be preserved.**
+  It is the authentic reference and the source every later version derives
+  from. Do not overwrite, re-encode or delete it.
+- **`black-olive-sourdough-dark.jpg` — an AI-assisted restyling of that
+  photograph**, generated from it as the reference so the surrounding
+  environment matches the deep black studio ground of the Plain and Green
+  Olive shots. The loaf, olives, basket and paper come from the original; the
+  background does not. It is the file `config.js` currently points at.
+
+So the loaf a customer sees on the site is the owner's loaf, but the image is
+not a camera original. Anyone picking this up later should know that before
+treating it as documentary product photography.
+
 ## loaf-mark.png
 
 The drawn olive loaf from the Instagram posts, cut out of a screenshot. The
