@@ -572,7 +572,7 @@ window.renderConfirmation = function () {
   ].filter(r => r[1]).map(r =>
     '<div><dt>' + esc(r[0]) + '</dt><dd class="wrap-any">' + esc(r[1]) + "</dd></div>").join("");
 
-  $("#promise").textContent = (window.COZY_CONFIG || {}).deliveryPromise || "";
+  $("#promise").textContent = (window.COZY_CONFIG || {}).confirmationNote || "";
 
   /* Leaving this page must not leave a stale order behind. */
   $("#again").addEventListener("click", () => {

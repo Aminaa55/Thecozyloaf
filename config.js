@@ -15,6 +15,11 @@ window.COZY_CONFIG = {
      page, so it needs to read sensibly in both places. */
   deliveryPromise: "Every loaf is baked to order, so we ask for 4 days' notice.",
   deliveryFeeNote: "Delivery fee will be confirmed separately.",
+
+  /* Shown on the confirmation page. By then the order is placed and
+     the notice period is no longer news — the one thing still open is
+     what the customer will actually pay. */
+  confirmationNote: "We'll contact you to confirm your delivery fee and final order total.",
   maxPerLoaf: 20,
 
   /* ── Delivery dates ─────────────────────────
