@@ -7,18 +7,26 @@ a browser and the whole site works.
 
 ## Approved baselines
 
-Two commits are signed off, and they mean different things.
+Several commits are signed off, and they mean different things.
 
 - **`aa38acd` — the approved original visual baseline.** The design the owners
   approved: composition, palette, typography, illustration use, crops, spacing
   and responsive behaviour.
-- **`ac73a72` — the current approved baseline.** `aa38acd` plus the Black Olive
-  Sourdough product. Styling is byte-identical between the two; the difference
-  is one product and the data wiring behind it.
+- **`ac73a72` — historical.** `aa38acd` plus the Black Olive Sourdough product.
+  Styling is byte-identical to `aa38acd`; the difference is one product and the
+  data wiring behind it.
+- **`f26b577` — the current approved baseline.** `ac73a72` plus two changes:
+  Olive Sourdough renamed to Green Olive Sourdough, and the Black Olive product
+  pointed at its dark-background image. Styling is still byte-identical to
+  `aa38acd`.
+- **`99820a9` — documentation only.** Records the provenance of the two Black
+  Olive image files in `assets/README.md`. Every website file, asset, template
+  and config is byte-identical to `f26b577`, so the deployed site is unchanged
+  by it.
 
-**Start future work from `ac73a72`** unless the owners say otherwise. `aa38acd`
-is kept on record as the point the visual design was frozen, not as a place to
-branch from.
+**Start future work from `f26b577`** unless the owners say otherwise. The
+earlier commits are kept on record to show what was frozen when, not as places
+to branch from.
 
 Do not change styling, layout, spacing, typography, illustrations, image crops,
 buttons, the footer, product presentation or responsive behaviour unless the
