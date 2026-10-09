@@ -5,6 +5,29 @@ Website for The Cozy Loaf, a sourdough bakery delivering in Cairo.
 Static files only — no build step, no server, no database. Open `index.html` in
 a browser and the whole site works.
 
+## Approved visual baseline
+
+**Commit `aa38acd` is the approved visual baseline for this site.** The owners
+signed off on the design at that commit.
+
+Do not change styling, layout, spacing, typography, illustrations, image crops,
+buttons, the footer, product presentation or responsive behaviour unless the
+owners explicitly ask for that change. This holds for incidental tidying too: a
+change nobody requested is out of scope even if it looks like an improvement.
+
+Two brand upgrades are expected and welcome when the assets arrive:
+
+1. **The logo.** Put the file in `assets/` and name it in `config.js` under
+   `images.logo`. Five slots already wait for it — the header and the sign-off
+   label on the home page, three on the confirmation page — and each hides
+   itself until the file exists, so nothing shows a gap in the meantime. Do not
+   substitute a drawn mark, a wheat or bread icon, or any other stand-in.
+2. **More photography.** Only authentic Cozy Loaf photographs. No stock, no
+   generated imagery.
+
+Functional work — ordering, email delivery, config, copy supplied by the
+owners — is not covered by the freeze and proceeds as normal.
+
 ## Palette
 
 | | |
@@ -170,7 +193,16 @@ Merge fields are `{{double_braced}}` so any sending service can fill them.
 The customer template says the delivery fee is still to be confirmed and never
 implies a final total.
 
-**Nothing sends them yet** — see the notes above on `SETTINGS`.
+Both are sent on every order through EmailJS, configured in `config.js` under
+`emailjs`. The files here are the reference copies — the live content lives in
+the EmailJS dashboard, so a change here must be pasted there to take effect.
+
+The recipient of each message is set by the template's **To Email** field in the
+dashboard, not by the site. The owner notification should use `{{to_email}}`,
+which the site fills from `emailjs.ownerEmail`; the customer confirmation must
+use `{{customer_email}}`. Note that `to_email` is sent to *both* templates, so
+pointing the customer template at `{{to_email}}` would send every customer's
+confirmation to the bakery instead.
 
 ## Images
 
