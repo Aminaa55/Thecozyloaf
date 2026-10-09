@@ -5,10 +5,20 @@ Website for The Cozy Loaf, a sourdough bakery delivering in Cairo.
 Static files only — no build step, no server, no database. Open `index.html` in
 a browser and the whole site works.
 
-## Approved visual baseline
+## Approved baselines
 
-**Commit `aa38acd` is the approved visual baseline for this site.** The owners
-signed off on the design at that commit.
+Two commits are signed off, and they mean different things.
+
+- **`aa38acd` — the approved original visual baseline.** The design the owners
+  approved: composition, palette, typography, illustration use, crops, spacing
+  and responsive behaviour.
+- **`ac73a72` — the current approved baseline.** `aa38acd` plus the Black Olive
+  Sourdough product. Styling is byte-identical between the two; the difference
+  is one product and the data wiring behind it.
+
+**Start future work from `ac73a72`** unless the owners say otherwise. `aa38acd`
+is kept on record as the point the visual design was frozen, not as a place to
+branch from.
 
 Do not change styling, layout, spacing, typography, illustrations, image crops,
 buttons, the footer, product presentation or responsive behaviour unless the
