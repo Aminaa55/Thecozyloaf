@@ -880,6 +880,118 @@ const PRODUCTS = SETTINGS.products;
     } catch (e) { return false; }
   }
 
+  /* ── The order log, via /api/order ───────────────────────
+     One row per placed order, in the bakery's Google Sheet. The Google
+     credential lives only in Vercel's environment variables, so the
+     browser posts the order to our own endpoint on our own domain and
+     that endpoint writes the row. Nothing secret passes through here.
+
+     This is written to be incapable of harm. It cannot throw, it cannot
+     delay the emails, and it cannot keep a customer from their
+     confirmation page: every failure path resolves to a word for the
+     console and nothing more. */
+
+  const LOG_QUEUE = "cozyloaf.orderLogQueue";
+
+  /* Only what the sheet has columns for. The order record also carries
+     display text and delivery copy the sheet has no use for. */
+  function logPayload(o) {
+    return {
+      reference: o.reference,
+      placedAt: o.placedAt,
+      currency: o.currency,
+      subtotal: o.subtotal,
+      notes: o.notes,
+      customer: o.customer,
+      items: o.items.map(i => ({ id: i.id, quantity: i.quantity, unitPrice: i.unitPrice, lineTotal: i.lineTotal }))
+    };
+  }
+
+  /* Resolves to { ok, retry }, and never rejects.
+
+     keepalive lets the request outlive the page. The redirect to the
+     confirmation page follows within milliseconds of this being sent,
+     and without keepalive the browser would cancel a write that was
+     about to succeed. */
+  function postLog(payload) {
+    const cfg = SETTINGS.orderLog || {};
+    return fetch(cfg.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).then(res => {
+      /* A rejected payload will never be accepted, however many times
+         it is offered, so it is not worth keeping. Anything else — a
+         network error, or Google being briefly unavailable — might. */
+      if (res.ok) return { ok: true, retry: false };
+      return { ok: false, retry: res.status !== 400 };
+    }).catch(() => ({ ok: false, retry: true }));
+  }
+
+  function queueLog(payload) {
+    const cfg = SETTINGS.orderLog || {};
+    if (!cfg.retryQueue) return;
+    try {
+      const queue = JSON.parse(localStorage.getItem(LOG_QUEUE) || "[]");
+      if (queue.some(p => p && p.reference === payload.reference)) return;
+      queue.push(payload);
+      localStorage.setItem(LOG_QUEUE, JSON.stringify(queue.slice(-20)));
+    } catch (e) {}
+  }
+
+  /* Resolves to a word describing what became of the row. */
+  function logOrder(o) {
+    const cfg = SETTINGS.orderLog || {};
+    if (cfg.enabled === false || !cfg.endpoint) return Promise.resolve("off");
+
+    const payload = logPayload(o);
+    const settled = postLog(payload).then(r => {
+      if (r.ok) return "logged";
+      if (r.retry) { queueLog(payload); return "queued"; }
+      return "rejected";
+    });
+
+    /* The customer is not held past this. The request itself is not
+       cancelled — keepalive sees it through after the page has gone. */
+    return Promise.race([
+      settled,
+      new Promise(resolve => setTimeout(() => resolve("still sending"), cfg.timeoutMs || 4000))
+    ]).catch(() => "failed");
+  }
+
+  /* Rows that could not be written on an earlier visit. The endpoint
+     refuses to write the same order number twice, so offering a row
+     that did in fact arrive is harmless.
+
+     A handful at a time, one after another: the queue is never urgent,
+     and a burst of twenty would only trip the endpoint's own rate
+     limit and come straight back. */
+  function flushLogQueue() {
+    const cfg = SETTINGS.orderLog || {};
+    if (cfg.enabled === false || !cfg.endpoint || !cfg.retryQueue) return;
+
+    let queue;
+    try { queue = JSON.parse(localStorage.getItem(LOG_QUEUE) || "[]"); } catch (e) { return; }
+    if (!Array.isArray(queue) || !queue.length) return;
+
+    const batch = queue.slice(0, 6);
+    const later = queue.slice(6);
+    const keep = [];
+
+    batch.reduce((chain, payload) => chain.then(() =>
+      postLog(payload).then(r => { if (!r.ok && r.retry) keep.push(payload); })
+    ), Promise.resolve()).then(() => {
+      const remaining = keep.concat(later);
+      try {
+        if (remaining.length) localStorage.setItem(LOG_QUEUE, JSON.stringify(remaining));
+        else localStorage.removeItem(LOG_QUEUE);
+      } catch (e) {}
+      const written = batch.length - keep.length;
+      if (written) console.log("[cozyloaf] " + written + " queued order(s) written to the order sheet");
+    });
+  }
+
   /* ── Email, via EmailJS ──────────────────────────────────────
      Two messages go out per order: the bakery's, then the customer's.
      They are sent independently — one failing must not stop the other,
@@ -957,8 +1069,15 @@ const PRODUCTS = SETTINGS.products;
   /* ── Submit ──────────────────────────────────────────────── */
   const note = msg => { $("#form-note").textContent = msg || ""; };
 
+  /* One order at a time. The button is disabled while a submit is in
+     flight, but a keyboard submit from a text field never goes through
+     the button — and a second submit would mint a second order number,
+     which nothing downstream could recognise as the same order. */
+  let submitting = false;
+
   $("#checkout").addEventListener("submit", async e => {
     e.preventDefault();
+    if (submitting) return;
     const bad = validate();
     if (bad.length) {
       note(bad.length === 1 ? "Please check the highlighted field." : "Please check the highlighted fields.");
@@ -968,10 +1087,18 @@ const PRODUCTS = SETTINGS.products;
       return;
     }
 
+    submitting = true;
     const btn = $("#place");
     btn.disabled = true; btn.textContent = "Sending…"; note("");
 
     const o = buildOrder();
+
+    /* Start the sheet row now and let it run alongside the emails, so
+       the customer waits for the slower of the two rather than for the
+       sum of both. It is collected further down — settled, since it
+       has no way to reject — and whatever it says changes nothing. */
+    const logging = logOrder(o);
+
     /* The order itself has already been captured. Whether the bakery's
        notification got through is an operational matter — it is logged for
        the developer and never shown to the customer, who has done nothing
@@ -987,6 +1114,15 @@ const PRODUCTS = SETTINGS.products;
     if (how === "unavailable") console.warn("[cozyloaf] order " + o.reference + " saved; the EmailJS library did not load");
     o.notified = how;
 
+    /* Recorded alongside how the emails went, and for the same reason:
+       so a missing row can be explained later without guesswork. Like
+       the email result it is never shown to the customer, who has done
+       nothing wrong and can do nothing about it. */
+    o.logged = await logging;
+    if (o.logged !== "logged" && o.logged !== "off") {
+      console.warn("[cozyloaf] order " + o.reference + " — order sheet: " + o.logged);
+    }
+
     saveLocally(o);
     try { sessionStorage.setItem("cozyloaf.lastOrder", JSON.stringify(o)); } catch (e) {}
 
@@ -994,6 +1130,7 @@ const PRODUCTS = SETTINGS.products;
     Object.keys(PRODUCTS).forEach(k => { qty[k] = 0; });
     $("#checkout").reset();
     $("#checkout").dataset.open = "false";
+    submitting = false;
     btn.disabled = false;
     btn.innerHTML = 'Place order <span class="arr">\u2192</span>';
     render();
@@ -1009,6 +1146,11 @@ const PRODUCTS = SETTINGS.products;
   }
 
   render();
+
+  /* Nothing the customer is waiting for, so it waits until the page has
+     nothing better to do. */
+  if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(flushLogQueue, { timeout: 5000 });
+  else setTimeout(flushLogQueue, 2500);
 })();
 </script>
 </body>

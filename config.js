@@ -112,6 +112,45 @@ window.COZY_CONFIG = {
        through to their confirmation. The order is already saved, so
        this is a courtesy cap, not a deadline. */
     timeoutMs: 8000
+  },
+
+
+  /* ── The order log ───────────────────────────────────────────
+     Every placed order is also appended as one row to the bakery's
+     Google Sheet, so the owners have a running list they can sort,
+     filter and mark off without anyone building them an app.
+
+     There is no credential here, and there must never be one. The
+     browser posts the order to our own endpoint on the same domain,
+     and that endpoint — running on Vercel, with the Google service
+     account in its environment variables — writes the row. The key
+     never reaches the page.
+
+     This is strictly an addition to the emails, never a replacement.
+     If it is switched off, or the endpoint is down, or Google is
+     unreachable, the order is still emailed to the bakery, still
+     confirmed to the customer, and still shown on the confirmation
+     page. Nothing the customer sees depends on it. */
+  orderLog: {
+    /* Set to false to stop logging orders to the sheet. The website
+       carries on exactly as it did before the sheet existed. */
+    enabled: true,
+
+    /* Our own serverless function, on our own domain. */
+    endpoint: "/api/order",
+
+    /* Shorter than the email timeout on purpose: the sheet runs
+       alongside the emails, so it should never be the thing keeping
+       a customer waiting. A slower write is not abandoned — it
+       finishes in the background after the page has moved on. */
+    timeoutMs: 4000,
+
+    /* A write that fails for a reason that might pass later — the
+       network, or Google being briefly unavailable — is kept and
+       retried on the next visit, so an outage delays rows instead of
+       losing them. The endpoint refuses to write the same order
+       number twice, so a retry can never duplicate a row. */
+    retryQueue: true
   }
 };
 
