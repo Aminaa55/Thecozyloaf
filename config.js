@@ -58,7 +58,7 @@ window.COZY_CONFIG = {
     logo: "",
     plainSourdough: "plain-sourdough.jpg",
     oliveSourdough: "olive-sourdough.jpg",
-    blackOliveSourdough: "black-olive-sourdough.jpg",
+    blackOliveSourdough: "black-olive-sourdough-dark.jpg",
     loafMark: "loaf-mark.png"
   },
 
