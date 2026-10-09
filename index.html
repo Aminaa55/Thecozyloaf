@@ -54,6 +54,7 @@ body{
   overflow-x:hidden;-webkit-font-smoothing:antialiased;
 }
 img{max-width:100%;display:block}
+figure{margin:0}
 .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
 .defs{position:absolute;width:0;height:0;overflow:hidden}
 .skip{position:absolute;left:-9999px;padding:.85rem 1.1rem}
@@ -139,9 +140,10 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 .shot__img{
   position:relative;overflow:hidden;background:var(--night);
   border:2.5px solid var(--ink);border-radius:var(--r-a);
-  aspect-ratio:5/4;transform:rotate(-1.4deg);
+  aspect-ratio:7/5;transform:rotate(-1.4deg);
 }
-.shot__img img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
+.shot__img img{width:100%;height:100%;object-fit:cover;object-position:center 60%;
+  transform:scale(1.22);transform-origin:center 58%}
 .shot__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:1.4rem;
   background:var(--paper);color:var(--ink)}
 .shot__fb p{font-family:var(--hand);font-size:1.3rem;margin:0}
@@ -189,9 +191,9 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 .entry:nth-of-type(even) .entry__shot{margin-left:clamp(1.2rem,11vw,4rem)}
 .entry__shot .frame{
   position:relative;overflow:hidden;background:var(--night);
-  border:2.5px solid var(--ink);border-radius:var(--r-a);aspect-ratio:4/5;
+  border:2.5px solid var(--ink);border-radius:var(--r-a);aspect-ratio:20/21;
 }
-.entry__shot .frame img{width:100%;height:100%;object-fit:cover;object-position:center 58%}
+.entry__shot .frame img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
 .entry:nth-of-type(odd) .entry__shot .frame{transform:rotate(-1.5deg)}
 .entry:nth-of-type(even) .entry__shot .frame{transform:rotate(1.5deg)}
 .entry__fb{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:1.5rem;background:var(--paper)}
@@ -284,7 +286,7 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
   font-family:var(--ui);font-size:1.0625rem;color:var(--ink);
   background:transparent;
   border:0;border-bottom:2px solid rgba(146,74,35,.5);border-radius:0;
-  padding:.62rem .1rem .28rem;width:100%;min-height:44px;transition:border-color .18s;
+  padding:.62rem .1rem .28rem;width:100%;min-height:45px;transition:border-color .18s;
 }
 .field textarea{resize:vertical;min-height:3.3rem;padding-top:.4rem;line-height:1.55}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;
@@ -348,7 +350,7 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
   .shot{margin-top:0;align-self:center;grid-row:1/span 2;max-width:26rem;margin-left:auto}
   /* The name commands its column instead of sitting in the middle of it. */
   .wordmark{font-size:clamp(3.4rem,8.6vw,8.2rem)}
-  .shot__img{aspect-ratio:1/1;transform:rotate(-1.1deg)}
+  .shot__img{aspect-ratio:9/8;transform:rotate(-1.1deg)}
   .hero__do{align-self:start}
   .pricetag{margin:.7rem 0 0 .5rem}
   .pricetag b{font-size:1.5rem}
@@ -367,6 +369,7 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
   .entry__shot .frame img{object-position:center 68%}
   .entry__name{font-size:clamp(2.1rem,3.4vw,3rem)}
 
+  .signoff{padding-block:clamp(1.3rem,2.2vw,1.9rem) clamp(1.6rem,2.8vw,2.3rem)}
   .slip{padding:clamp(1.8rem,2.6vw,2.3rem)}
   .slip__body{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(18rem,.85fr);
     column-gap:clamp(1.8rem,3.5vw,2.6rem);align-items:start}
