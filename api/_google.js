@@ -92,17 +92,30 @@ function privateKey() {
   const packed = process.env.GOOGLE_PRIVATE_KEY_B64;
   const raw = process.env.GOOGLE_PRIVATE_KEY;
   const json = fromJson();
-  if (!packed && !json && !raw) {
+
+  /* A key pasted into the variable meant for the file, or a file
+     pasted into the variable meant for the key: both are easy mistakes
+     to make when the two sit next to each other, and neither is worth
+     a failed deploy. Whichever variable it arrived in, if it carries a
+     PEM it is used as one. */
+  const spilled = (process.env.GOOGLE_SERVICE_ACCOUNT_JSON || "").trim();
+  /* Starts with, not merely contains: half a JSON file carries a BEGIN
+     marker somewhere inside it, and treating that as a key would answer
+     a truncated paste by complaining about the key rather than about
+     the truncation. */
+  const spilledIsKey = !json && /^-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(spilled);
+  const rawIsFile = (raw || "").trim().startsWith("{");
+
+  if (!packed && !json && !raw && !spilledIsKey) {
     throw new Error(
       "no service-account credentials are set \u2014 paste the whole downloaded " +
       "JSON file into GOOGLE_SERVICE_ACCOUNT_JSON, or set GOOGLE_PRIVATE_KEY on its own"
     );
   }
 
-  const rawIsFile = (raw || "").trim().startsWith("{");
   let key = packed
     ? Buffer.from(packed.trim().replace(/\s+/g, ""), "base64").toString("utf8")
-    : ((rawIsFile ? null : raw) || json.private_key);
+    : ((rawIsFile ? null : raw) || (json && json.private_key) || (spilledIsKey ? spilled : null));
 
   key = key.trim();
   /* A value copied with its JSON quotes still attached. */
@@ -236,7 +249,21 @@ function describe(name) {
     }
   }
   if (/^-----BEGIN/.test(value)) return name + ": looks like a PEM key, " + shape;
-  return name + ": " + shape;
+
+  /* Not JSON and not a clean PEM. Report which landmarks are in there,
+     so a clipped selection can be told from the wrong value entirely.
+     Only whether each marker is present — never any surrounding text. */
+  const marks = [
+    ['"type": "service_account"', /"type"\s*:\s*"service_account"/],
+    ["\"private_key\"", /"private_key"/],
+    ["\"client_email\"", /"client_email"/],
+    ["BEGIN PRIVATE KEY", /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
+    ["END PRIVATE KEY", /-----END [A-Z ]*PRIVATE KEY-----/]
+  ].filter(m => m[1].test(value)).map(m => m[0]);
+
+  return name + ": " + shape +
+    (marks.length ? ", contains " + marks.join(" + ") : ", none of the expected landmarks in it") +
+    " \u2014 the whole file is needed, from the opening { to the closing }";
 }
 
 function credentialReport() {
