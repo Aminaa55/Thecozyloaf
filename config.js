@@ -58,13 +58,15 @@ window.COZY_CONFIG = {
     logo: "",
     plainSourdough: "plain-sourdough.jpg",
     oliveSourdough: "olive-sourdough.jpg",
+    blackOliveSourdough: "black-olive-sourdough.jpg",
     loafMark: "loaf-mark.png"
   },
 
   /* ── Products ──────────────────────────────────────────────── */
   products: {
     plain: { name: "Plain Sourdough", price: 230 },
-    olive: { name: "Olive Sourdough", price: 250 }
+    olive: { name: "Olive Sourdough", price: 250 },
+    blackOlive: { name: "Black Olive Sourdough", price: 250 }
   },
 
   /* ── Email notifications, via EmailJS ────────────────────────

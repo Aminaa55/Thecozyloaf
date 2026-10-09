@@ -512,6 +512,20 @@ section[id],#checkout{scroll-margin-top:5.6rem}
         <div class="entry__buy"><button class="lbl lbl--ink" type="button" data-add="olive">Add to basket <svg class="nib" viewBox="0 0 26 16" aria-hidden="true"><use href="#d-arrow-r"/></svg></button></div>
       </div>
     </article>
+
+    <article class="entry">
+      <div class="entry__shot" data-reveal data-from="left">
+        <div class="frame" data-frame data-empty="false">
+          <img alt="Black Olive Sourdough, studded with black olives." data-black-olive-photo>
+          <div class="entry__fb"><p>Black Olive Sourdough</p></div>
+        </div>
+      </div>
+      <div class="entry__body" data-reveal data-from="right">
+        <h3 class="entry__name">Black Olive Sourdough</h3>
+        <p class="price"><b>EGP 250</b><small>per loaf</small></p>
+        <div class="entry__buy"><button class="lbl lbl--ink" type="button" data-add="blackOlive">Add to basket <svg class="nib" viewBox="0 0 26 16" aria-hidden="true"><use href="#d-arrow-r"/></svg></button></div>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -550,6 +564,14 @@ section[id],#checkout{scroll-margin-top:5.6rem}
               <button type="button" data-d="-1" aria-label="One fewer Olive Sourdough" disabled>&minus;</button>
               <output id="q-olive">0</output>
               <button type="button" data-d="1" aria-label="One more Olive Sourdough">+</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row__name"><h4>Black Olive Sourdough</h4><p>EGP 250</p></div>
+            <div class="step" data-step="blackOlive">
+              <button type="button" data-d="-1" aria-label="One fewer Black Olive Sourdough" disabled>&minus;</button>
+              <output id="q-blackOlive">0</output>
+              <button type="button" data-d="1" aria-label="One more Black Olive Sourdough">+</button>
             </div>
           </div>
 
@@ -666,7 +688,10 @@ const PRODUCTS = SETTINGS.products;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const egp = n => "EGP " + n.toLocaleString("en-US");
   const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  const qty = { plain: 0, olive: 0 };
+  /* One basket counter per configured product, so adding a loaf to
+     config.js is the only edit the quantity logic ever needs. */
+  const qty = {};
+  Object.keys(PRODUCTS).forEach(k => { qty[k] = 0; });
 
   /* ── Image slots ──────────────────────────────────────────────
      Each <img> is pointed at assets/<name> and the loader finds the
@@ -678,7 +703,8 @@ const PRODUCTS = SETTINGS.products;
 
   [["[data-hero-photo]", "plainSourdough"],
    ["[data-plain-photo]", "plainSourdough"],
-   ["[data-olive-photo]", "oliveSourdough"]].forEach(([imgSel, key]) => {
+   ["[data-olive-photo]", "oliveSourdough"],
+   ["[data-black-olive-photo]", "blackOliveSourdough"]].forEach(([imgSel, key]) => {
     const img = $(imgSel);
     if (!img) return;
     const box = img.closest("[data-loafcard], [data-frame]");
