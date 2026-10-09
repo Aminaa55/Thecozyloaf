@@ -35,16 +35,49 @@ function b64url(input) {
     .replace(/=+$/, "");
 }
 
-/* The key is a multi-line PEM. Pasting one of those into a dashboard
-   field is the classic source of "PEM routines::no start line", so the
-   base64 form is preferred — one opaque line that cannot be mangled.
-   The raw form is accepted too, with the usual \n unescaping. */
+/* The key is a multi-line PEM, and the service-account JSON file holds
+   it as one long line with literal \n sequences in it. Copying that
+   value straight into a dashboard field is by far the easiest thing for
+   a person to do, and by far the most common thing to get subtly wrong:
+   the quotes come along, or a trailing newline does, or the \n stay
+   escaped — and every one of those surfaces as the same baffling
+   "error:0909006C:PEM routines::no start line".
+
+   So rather than insist on a tidy format, this accepts every form the
+   key realistically arrives in and tidies it up: either variable, with
+   or without wrapping quotes, escaped or real newlines. If it still
+   cannot find a PEM, it says so in words that name the fix instead of
+   leaving a crypto error to be decoded. */
 function privateKey() {
   const packed = process.env.GOOGLE_PRIVATE_KEY_B64;
-  if (packed) return Buffer.from(packed.trim(), "base64").toString("utf8");
   const raw = process.env.GOOGLE_PRIVATE_KEY;
-  if (raw) return raw.replace(/\\n/g, "\n");
-  throw new Error("GOOGLE_PRIVATE_KEY_B64 is not set");
+  if (!packed && !raw) {
+    throw new Error("neither GOOGLE_PRIVATE_KEY nor GOOGLE_PRIVATE_KEY_B64 is set");
+  }
+
+  let key = packed
+    ? Buffer.from(packed.trim().replace(/\s+/g, ""), "base64").toString("utf8")
+    : raw;
+
+  key = key.trim();
+  /* A value copied with its JSON quotes still attached. */
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1);
+  }
+  /* Literal backslash-n, as the JSON file writes them. */
+  key = key.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+
+  if (!/^-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(key)) {
+    throw new Error(
+      "the private key is not readable — it must start with " +
+      "-----BEGIN PRIVATE KEY----- . Copy the whole private_key value out of " +
+      "the service-account JSON file, without the surrounding quotes."
+    );
+  }
+  if (!/-----END [A-Z ]*PRIVATE KEY-----$/.test(key)) {
+    throw new Error("the private key is cut off — it must end with -----END PRIVATE KEY-----");
+  }
+  return key + "\n";
 }
 
 async function accessToken() {
