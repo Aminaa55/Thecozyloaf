@@ -31,9 +31,10 @@ static upload into a build. Node's own `crypto` and `fetch` are enough.
 | Variable | Required | |
 |---|---|---|
 | `GOOGLE_SHEETS_SPREADSHEET_ID` | yes | The long id in the sheet's URL, between `/d/` and `/edit`. |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | yes | `client_email` from the service-account JSON key. |
-| `GOOGLE_PRIVATE_KEY` | yes | `private_key` from that JSON, pasted exactly as it appears there — one long line with `\n` sequences in it. Wrapping quotes, real newlines, CRLF and stray whitespace are all tolerated, and an unusable value says what is wrong with it rather than surfacing a crypto error. |
-| `GOOGLE_PRIVATE_KEY_B64` | alternative | The same key base64-encoded. Takes precedence if both are set. |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | yes | The whole downloaded service-account file: open it, select all, paste. Both the key and the address are read out of it, so nothing else is needed. Picking the key out of that file by hand means selecting a two-thousand-character line without catching either quote mark — and one character wrong produces a PEM error that explains nothing. |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | only if the key is supplied alone | `client_email`. Overrides the file's own value when both are present. |
+| `GOOGLE_PRIVATE_KEY` | only without the file | `private_key` on its own. Wrapping quotes, escaped or real newlines, CRLF and stray whitespace are all tolerated; pasting the whole file in here by mistake is read as the file. |
+| `GOOGLE_PRIVATE_KEY_B64` | alternative | The same key base64-encoded. Takes precedence over the other two. |
 | `ORDER_SHEET_SETUP_TOKEN` | setup only | Any random string. Without it `/api/setup-sheet` returns 404, so the route is closed by default. Safe to delete once the sheet is built. |
 | `ORDER_SHEET_TAB` | no | Defaults to `Orders`. |
 | `ORDER_TIMEZONE` | no | Defaults to `Africa/Cairo`. |

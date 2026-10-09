@@ -27,6 +27,46 @@ const SCOPE = "https://www.googleapis.com/auth/spreadsheets";
    until a minute before it expires; a cold container just mints one. */
 let cachedToken = null;
 
+/* The whole service-account JSON file, pasted as one value.
+
+   This is by far the easiest thing for a person to get right: open the
+   file, select all, copy, paste. The alternative is selecting a single
+   two-thousand-character line out of that file without catching either
+   quote mark, and getting it a character wrong produces a PEM error
+   that explains nothing about what went wrong.
+
+   Parsed once and remembered: a container serves many requests and the
+   value cannot change under it. */
+let serviceJson;
+
+function fromJson() {
+  if (serviceJson !== undefined) return serviceJson;
+
+  /* GOOGLE_PRIVATE_KEY is checked too, because pasting the whole file
+     into the variable named "private key" is an obvious thing to do and
+     there is no reason to punish it. */
+  let raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (!raw || !raw.trim()) {
+    const spill = (process.env.GOOGLE_PRIVATE_KEY || "").trim();
+    if (spill.startsWith("{")) raw = spill;
+  }
+  if (!raw || !raw.trim()) { serviceJson = null; return null; }
+  try {
+    const parsed = JSON.parse(raw.trim());
+    if (parsed && parsed.private_key) {
+      serviceJson = parsed;
+    } else {
+      serviceJson = null;
+      console.warn("[google] GOOGLE_SERVICE_ACCOUNT_JSON parsed, but has no private_key in it");
+    }
+  } catch (e) {
+    serviceJson = null;
+    console.warn("[google] GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON \u2014 paste the whole file, " +
+      "from the opening { to the closing }");
+  }
+  return serviceJson;
+}
+
 function b64url(input) {
   return Buffer.from(input)
     .toString("base64")
@@ -51,13 +91,18 @@ function b64url(input) {
 function privateKey() {
   const packed = process.env.GOOGLE_PRIVATE_KEY_B64;
   const raw = process.env.GOOGLE_PRIVATE_KEY;
-  if (!packed && !raw) {
-    throw new Error("neither GOOGLE_PRIVATE_KEY nor GOOGLE_PRIVATE_KEY_B64 is set");
+  const json = fromJson();
+  if (!packed && !json && !raw) {
+    throw new Error(
+      "no service-account credentials are set \u2014 paste the whole downloaded " +
+      "JSON file into GOOGLE_SERVICE_ACCOUNT_JSON, or set GOOGLE_PRIVATE_KEY on its own"
+    );
   }
 
+  const rawIsFile = (raw || "").trim().startsWith("{");
   let key = packed
     ? Buffer.from(packed.trim().replace(/\s+/g, ""), "base64").toString("utf8")
-    : raw;
+    : ((rawIsFile ? null : raw) || json.private_key);
 
   key = key.trim();
   /* A value copied with its JSON quotes still attached. */
@@ -83,8 +128,21 @@ function privateKey() {
 async function accessToken() {
   if (cachedToken && cachedToken.expires > Date.now() + 60000) return cachedToken.token;
 
-  const issuer = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  if (!issuer) throw new Error("GOOGLE_SERVICE_ACCOUNT_EMAIL is not set");
+  /* The key is resolved first on purpose. When nothing at all has been
+     configured, "paste the whole downloaded JSON file" is the useful
+     thing to say; checking the address first would answer with a
+     missing-variable name instead, which is true but unhelpful. */
+  const key = privateKey();
+
+  /* The address comes free with the pasted file, so it only needs
+     setting separately when the key was supplied on its own. */
+  const json = fromJson();
+  const issuer = (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || "").trim() ||
+                 (json && json.client_email);
+  if (!issuer) {
+    throw new Error("GOOGLE_SERVICE_ACCOUNT_EMAIL is not set, and no client_email was found " +
+      "in GOOGLE_SERVICE_ACCOUNT_JSON");
+  }
 
   const now = Math.floor(Date.now() / 1000);
   const header = b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
@@ -92,7 +150,7 @@ async function accessToken() {
     iss: issuer, scope: SCOPE, aud: TOKEN_URL, iat: now, exp: now + 3600
   }));
   const unsigned = header + "." + claims;
-  const signature = b64url(crypto.createSign("RSA-SHA256").update(unsigned).sign(privateKey()));
+  const signature = b64url(crypto.createSign("RSA-SHA256").update(unsigned).sign(key));
 
   const res = await fetch(TOKEN_URL, {
     method: "POST",
@@ -144,3 +202,6 @@ async function sheets(method, path, body) {
 }
 
 module.exports = { accessToken, sheets, spreadsheetId };
+
+/* For the local test harness; Vercel ignores extra keys. */
+module.exports.__reset = () => { cachedToken = null; serviceJson = undefined; };
