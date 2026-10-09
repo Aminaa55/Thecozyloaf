@@ -26,22 +26,23 @@
    ═══════════════════════════════════════════════════════════════ */
 
 const { sheets } = require("./_google.js");
+const delivery = require("./_delivery.js");
 
 const TAB = (process.env.ORDER_SHEET_TAB || "Orders").trim();
 const TIMEZONE = (process.env.ORDER_TIMEZONE || "Africa/Cairo").trim();
 
 /* Which quantity column each loaf is counted in. The keys are the
    product keys in config.js; the numbers are zero-based positions in
-   the fifteen-column row below.
+   the sixteen-column row below.
 
    Adding a fourth loaf to config.js means adding a column to the
    Orders sheet and an entry here. Until that happens an unknown loaf
    is not dropped — it still counts towards Total Loaves and Revenue,
    and the order is still logged. A missing column is a reporting gap;
    a missing order would be a lost sale. */
-const QTY_COLUMN = { plain: 8, olive: 9, blackOlive: 10 };
+const QTY_COLUMN = { plain: 9, olive: 10, blackOlive: 11 };
 
-const COLUMNS = 15;                 /* A … O */
+const COLUMNS = 16;                 /* A … P */
 const MAX_QUANTITY = 20;            /* mirrors maxPerLoaf in config.js */
 
 /* Bounds, not a price list. A loaf has never cost less than 200 EGP or
@@ -95,37 +96,16 @@ function isWhole(n, min, max) {
 }
 
 /* The customer's clock produced placedAt, and a customer's clock can be
-   wrong, or in another country. Date and Time are stamped here instead,
-   in the bakery's own timezone, so the sheet can never show an order
-   placed tomorrow.
+   wrong, or in another country. Date and Time are stamped from the
+   bakery's own timezone instead, by the same module that checks the
+   delivery date — so the stamp and the check can never disagree about
+   what day it is.
 
-   The date is written as plain ISO text rather than a Sheets serial
-   number: it is readable the moment it lands, with no column to format,
+   Dates are written as plain ISO text rather than Sheets serial
+   numbers: readable the moment they land, with no column to format,
    and ISO text sorts and compares chronologically, so the Dashboard's
    today / this week / this month formulas work on it directly. */
-function stamp() {
-  let parts;
-  try {
-    parts = new Intl.DateTimeFormat("en-GB", {
-      timeZone: TIMEZONE, hourCycle: "h23",
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit"
-    }).formatToParts(new Date());
-  } catch (e) {
-    parts = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "UTC", hourCycle: "h23",
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit"
-    }).formatToParts(new Date());
-  }
-  const p = {};
-  parts.forEach(part => { p[part.type] = part.value; });
-  return { date: p.year + "-" + p.month + "-" + p.day, time: p.hour + ":" + p.minute };
-}
 
-/* Vercel pre-parses a JSON body; the stream is the fallback. Either
-   way a parse failure reports itself in our own words rather than
-   quoting the body back into the response. */
 async function readBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
 
@@ -150,6 +130,14 @@ function buildRow(order) {
 
   const reference = clean(order.reference, 32);
   if (!REFERENCE.test(reference)) throw new Error("reference is not in the CL-YYMMDD-XXXX form");
+
+  /* The third and last pass over the delivery date. The browser
+     refused anything invalid twice already; this makes sure no row in
+     the sheet can claim a date the bakery could not have accepted,
+     whatever was posted here. */
+  const deliveryDate = clean(order.deliveryDate, 10);
+  const dateProblem = delivery.problem(deliveryDate, order.placedAt);
+  if (dateProblem) throw new Error(dateProblem);
 
   const c = order.customer && typeof order.customer === "object" ? order.customer : {};
   const fullName = clean(c.fullName, 120);
@@ -201,25 +189,26 @@ function buildRow(order) {
     throw new Error("subtotal does not match the line items");
   }
 
-  const when = stamp();
+  const when = delivery.stamp();
   const row = new Array(COLUMNS).fill("");
   row[0] = reference;
   row[1] = when.date;
   row[2] = when.time;
-  row[3] = fullName;
+  row[3] = deliveryDate;
+  row[4] = fullName;
   /* Left as text, with no parsing, so an Egyptian 01… number keeps
      its leading zero instead of becoming a number. */
-  row[4] = mobile;
-  row[5] = email;
-  row[6] = address;
-  row[7] = area;
-  row[8] = quantities[8];
+  row[5] = mobile;
+  row[6] = email;
+  row[7] = address;
+  row[8] = area;
   row[9] = quantities[9];
   row[10] = quantities[10];
-  row[11] = loaves;
-  row[12] = revenue;
-  row[13] = clean(order.notes, 1000);
-  row[14] = "New";
+  row[11] = quantities[11];
+  row[12] = loaves;
+  row[13] = revenue;
+  row[14] = clean(order.notes, 1000);
+  row[15] = "New";
 
   return { reference: reference, row: row, unmapped: unmapped };
 }
@@ -289,7 +278,7 @@ module.exports = async function handler(req, res) {
 
     await sheets(
       "POST",
-      "/values/" + encodeURIComponent(TAB + "!A:O") +
+      "/values/" + encodeURIComponent(TAB + "!A:P") +
         ":append?valueInputOption=RAW&insertDataOption=INSERT_ROWS",
       { values: [prepared.row] }
     );
@@ -305,4 +294,4 @@ module.exports = async function handler(req, res) {
 };
 
 /* Exported for the local test harness only; Vercel ignores extra keys. */
-module.exports.__test = { buildRow: buildRow, stamp: stamp, rateLimited: rateLimited };
+module.exports.__test = { buildRow: buildRow, rateLimited: rateLimited };

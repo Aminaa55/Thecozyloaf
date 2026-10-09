@@ -298,6 +298,19 @@ h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.08;letter-spacing
 .field select optgroup{font-family:var(--ui);font-weight:800;color:var(--rust)}
 .field select option{font-weight:400;color:var(--ink)}
 .field input::placeholder,.field textarea::placeholder{color:rgba(138,94,53,.6)}
+/* A date input's inner parts are drawn by the browser and do not inherit
+   the field's colour on their own — Chromium renders the year grey while
+   the rest of the date sits in brand brown. These put the whole control
+   in one colour and warm the native calendar button to match it. The
+   value, the picker and the validation are all untouched: this is purely
+   the control agreeing with the palette around it. */
+.field input[type="date"]::-webkit-datetime-edit,
+.field input[type="date"]::-webkit-datetime-edit-text,
+.field input[type="date"]::-webkit-datetime-edit-day-field,
+.field input[type="date"]::-webkit-datetime-edit-month-field,
+.field input[type="date"]::-webkit-datetime-edit-year-field{color:var(--ink)}
+.field input[type="date"]::-webkit-calendar-picker-indicator{
+  cursor:pointer;opacity:.75;filter:sepia(1) saturate(2.2) hue-rotate(-18deg)}
 .field small{font-size:.88rem;color:var(--ink-soft);line-height:1.45}
 .field .err{font-family:var(--ui);font-size:.88rem;font-weight:700;color:var(--rust);min-height:0;margin:0}
 .field--bad .err{min-height:1.1rem;margin-top:.15rem}
@@ -638,6 +651,15 @@ section[id],#checkout{scroll-margin-top:5.6rem}
         </div>
 
         <div class="fields">
+          <div class="field" id="f-delivery">
+            <label for="c-delivery">Preferred delivery date</label>
+            <input id="c-delivery" name="deliveryDate" type="date" required>
+            <small>Orders require 4 days' notice.</small>
+            <p class="err" data-err="delivery"></p>
+          </div>
+        </div>
+
+        <div class="fields">
           <div class="field">
             <label for="c-notes">Order notes <span class="opt">— optional</span></label>
             <textarea id="c-notes" name="notes"></textarea>
@@ -808,6 +830,7 @@ const PRODUCTS = SETTINGS.products;
   }));
 
   $("#to-details").addEventListener("click", () => {
+    primeDeliveryField();
     $("#checkout").dataset.open = "true";
     $("#checkout").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
     $("#c-name").focus({ preventScroll: true });
@@ -817,13 +840,105 @@ const PRODUCTS = SETTINGS.products;
     $("#order").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   });
 
+  /* ── Delivery dates ─────────────────────────
+     The bakery counts the day an order arrives as day one, so four
+     days' notice means the earliest delivery is three calendar days
+     from today.
+
+     Today is always today in Cairo, taken from the timezone rather
+     than from the customer's own clock: someone ordering from London
+     at eleven at night is already on tomorrow's date at the bakery,
+     and reading the date off their device would offer them a day
+     that cannot be baked in time.
+
+     Every step is calendar arithmetic through Date.UTC — never a
+     local Date. Egypt still moves its clocks in April and October,
+     and adding days across one of those boundaries with a local date
+     lands an hour out, which is all it takes to slip a day. */
+
+  function cairoToday() {
+    const part = {};
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Africa/Cairo", year: "numeric", month: "2-digit", day: "2-digit"
+    }).formatToParts(new Date()).forEach(x => { part[x.type] = x.value; });
+    return part.year + "-" + part.month + "-" + part.day;
+  }
+
+  /* Date.UTC rolls a day past the end of the month over for us, so
+     the 30th plus three is simply the 2nd. */
+  function addDays(iso, days) {
+    const p = iso.split("-").map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2] + days)).toISOString().slice(0, 10);
+  }
+
+  const blockedDates = () => (SETTINGS.unavailableDeliveryDates || []).map(String);
+
+  /* The first date that satisfies the notice period, whether or not
+     the bakery is actually delivering that day. */
+  function noticeDate() {
+    return addDays(cairoToday(), (SETTINGS.noticeDays || 4) - 1);
+  }
+
+  /* The first date the bakery will actually deliver on: the notice
+     period, then step over anything blocked, so the calendar never
+     opens on a day it is about to refuse. */
+  function firstOpenDate() {
+    let iso = noticeDate();
+    const blocked = blockedDates();
+    for (let i = 0; i < 400 && blocked.indexOf(iso) !== -1; i++) iso = addDays(iso, 1);
+    return iso;
+  }
+
+  function lastOpenDate() {
+    return addDays(cairoToday(), SETTINGS.maxDaysAhead || 60);
+  }
+
+  /* "Tuesday 13 October 2026". Pinned to UTC so the label names the
+     same day the ISO date does, in every timezone the page loads in. */
+  function dateLabel(iso) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || "")) return "";
+    const p = iso.split("-").map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2])).toLocaleDateString("en-GB", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC"
+    });
+  }
+
+  /* Why the picker cannot carry this alone: a date input has min and
+     max, and nothing at all for "every day except these". So min
+     blocks the notice period outright — those days cannot be chosen,
+     on an iPhone included — while a blocked date stays selectable and
+     is answered here instead.
+
+     This never reads the min attribute. It re-derives the rule from
+     the clock, so editing min in the browser's inspector changes
+     nothing about what the form will accept. */
+  function deliveryProblem() {
+    const chosenDate = $("#c-delivery").value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(chosenDate)) return "Please choose your preferred delivery date.";
+    if (chosenDate < noticeDate()) {
+      return "We need 4 days' notice \u2014 the earliest we can deliver is " + dateLabel(firstOpenDate()) + ".";
+    }
+    if (blockedDates().indexOf(chosenDate) !== -1) return "We're not delivering on that date. Please choose another day.";
+    if (chosenDate > lastOpenDate()) return "Please choose a date within the next two months.";
+    return "";
+  }
+
+  /* Set on load and again whenever the details step is opened, rather
+     than written into the HTML: a tab left open overnight would
+     otherwise still be offering yesterday's earliest date. */
+  function primeDeliveryField() {
+    const el = $("#c-delivery");
+    el.min = firstOpenDate();
+    el.max = lastOpenDate();
+  }
+
   /* ── Validation ──────────────────────────────────────────── */
   const setErr = (k, msg, f) => { $("[data-err='" + k + "']").textContent = msg; if (f) $(f).classList.add("field--bad"); };
   const clearErr = (k, f) => { const e = $("[data-err='" + k + "']"); if (e) e.textContent = ""; if (f) $(f).classList.remove("field--bad"); };
 
   function validate() {
-    ["name","mobile","email","address","area"].forEach(k => clearErr(k));
-    ["#f-name","#f-mobile","#f-email","#f-address","#f-area"].forEach(f => $(f).classList.remove("field--bad"));
+    ["name","mobile","email","address","area","delivery"].forEach(k => clearErr(k));
+    ["#f-name","#f-mobile","#f-email","#f-address","#f-area","#f-delivery"].forEach(f => $(f).classList.remove("field--bad"));
     const bad = [];
 
     if ($("#c-name").value.trim().length < 2) { setErr("name", "Please enter your full name.", "#f-name"); bad.push("#c-name"); }
@@ -831,6 +946,13 @@ const PRODUCTS = SETTINGS.products;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($("#c-email").value.trim())) { setErr("email", "Please enter a valid email address.", "#f-email"); bad.push("#c-email"); }
     if ($("#c-address").value.trim().length < 6) { setErr("address", "Please enter your delivery address.", "#f-address"); bad.push("#c-address"); }
     if (!$("#c-area").value) { setErr("area", "Please choose your area.", "#f-area"); bad.push("#c-area"); }
+
+    /* The second of the two checks on the delivery date. The calendar
+       made the invalid days hard to pick; this makes them impossible
+       to submit, and says why. */
+    const dateProblem = deliveryProblem();
+    if (dateProblem) { setErr("delivery", dateProblem, "#f-delivery"); bad.push("#c-delivery"); }
+
     return bad;
   }
   ["#c-name","#c-mobile","#c-email","#c-address","#c-area"].forEach(sel =>
@@ -838,6 +960,17 @@ const PRODUCTS = SETTINGS.products;
       const k = sel.replace("#c-", "");
       clearErr(k, "#f-" + k);
     }));
+
+  /* A blocked date is the one invalid choice the calendar still
+     allows, so it is answered the moment it is made rather than held
+     back until the customer presses the button. Silent until they
+     have actually picked something — an empty field is not a mistake
+     yet. */
+  $("#c-delivery").addEventListener("change", () => {
+    const problem = $("#c-delivery").value ? deliveryProblem() : "";
+    if (problem) setErr("delivery", problem, "#f-delivery");
+    else clearErr("delivery", "#f-delivery");
+  });
 
   /* ── The order record ────────────────────────────────────── */
   function makeRef() {
@@ -866,6 +999,11 @@ const PRODUCTS = SETTINGS.products;
         address: $("#c-address").value.trim(),
         area: $("#c-area").value.trim()
       },
+      /* Both forms are kept: the ISO date is what the sheet sorts and
+         the server re-checks, and the label is what a person reads in
+         an email without having to decode it. */
+      deliveryDate: $("#c-delivery").value,
+      deliveryDateLabel: dateLabel($("#c-delivery").value),
       delivery: { method: "Delivery", area: $("#c-area").value, promise: SETTINGS.deliveryPromise },
       notes: $("#c-notes").value.trim()
     };
@@ -899,6 +1037,7 @@ const PRODUCTS = SETTINGS.products;
     return {
       reference: o.reference,
       placedAt: o.placedAt,
+      deliveryDate: o.deliveryDate,
       currency: o.currency,
       subtotal: o.subtotal,
       notes: o.notes,
@@ -1006,6 +1145,7 @@ const PRODUCTS = SETTINGS.products;
       customer_email: o.customer.email,
       customer_address: o.customer.address,
       customer_area: o.customer.area,
+      delivery_date: o.deliveryDateLabel || o.deliveryDate || "\u2014",
       subtotal: o.subtotal.toLocaleString("en-US"),
       notes: o.notes || "\u2014",
       /* The bakery's inbox. EmailJS reads the recipient from the template,
@@ -1145,6 +1285,7 @@ const PRODUCTS = SETTINGS.products;
     window.location.href = "confirm.html?ref=" + encodeURIComponent(o.reference);
   }
 
+  primeDeliveryField();
   render();
 
   /* Nothing the customer is waiting for, so it waits until the page has

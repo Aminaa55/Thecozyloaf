@@ -560,11 +560,17 @@ window.renderConfirmation = function () {
     '<div class="muted"><dt>Delivery fee</dt><dd>To be confirmed</dd></div>' +
     '<div class="tot"><dt>Total before delivery</dt><dd>' + egp(order.totalBeforeDelivery) + "</dd></div>";
 
+  /* The delivery date leads, because it is the one thing the customer
+     will come back to this page to check. Rows with nothing in them
+     are dropped rather than printed empty, so an order placed before
+     the date picker existed still reads correctly. */
   $("#delivery").innerHTML = [
+    ["Delivery date", order.deliveryDateLabel || order.deliveryDate],
     ["Name", order.customer.fullName],
     ["Address", order.customer.address],
     ["Area", order.customer.area]
-  ].map(r => '<div><dt>' + esc(r[0]) + '</dt><dd class="wrap-any">' + esc(r[1]) + "</dd></div>").join("");
+  ].filter(r => r[1]).map(r =>
+    '<div><dt>' + esc(r[0]) + '</dt><dd class="wrap-any">' + esc(r[1]) + "</dd></div>").join("");
 
   $("#promise").textContent = (window.COZY_CONFIG || {}).deliveryPromise || "";
 

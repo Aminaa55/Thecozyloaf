@@ -29,9 +29,10 @@ const DASH = "Dashboard";
 const SRC = "'" + ORDERS.replace(/'/g, "''") + "'";
 
 const HEADERS = [
-  "Order Number", "Date", "Time", "Customer Name", "Mobile", "Email",
-  "Address", "Area", "Plain Qty", "Green Olive Qty", "Black Olive Qty",
-  "Total Loaves", "Revenue", "Notes", "Status"
+  "Order Number", "Order Date", "Order Time", "Preferred Delivery Date",
+  "Customer Name", "Mobile", "Email", "Address", "Area",
+  "Plain Qty", "Green Olive Qty", "Black Olive Qty",
+  "Total Loaves", "Product Subtotal", "Notes", "Status"
 ];
 
 const STATUSES = ["New", "Confirmed", "Baking", "Out for Delivery", "Delivered", "Cancelled"];
@@ -43,8 +44,8 @@ const STATUSES = ["New", "Confirmed", "Baking", "Out for Delivery", "Delivered",
    column. The bound of 20000 rows is far beyond any plausible order
    count and keeps the comparison explicit. */
 const LAST = 20000;
-const B = SRC + "!$B$2:$B$" + LAST;
-const M = SRC + "!$M$2:$M$" + LAST;
+const B = SRC + "!$B$2:$B$" + LAST;          /* order date */
+const N = SRC + "!$N$2:$N$" + LAST;          /* product subtotal */
 const MONTH_START = 'TEXT(EOMONTH(TODAY(),-1)+1,"yyyy-mm-dd")';
 const WEEK_START = 'TEXT(TODAY()-WEEKDAY(TODAY(),2)+1,"yyyy-mm-dd")';
 
@@ -72,28 +73,28 @@ function dashboardValues() {
     { range: DASH + "!A1", values: [["The Cozy Loaf — Orders Dashboard"]] },
 
     { range: DASH + "!A3:B6", values: [
-      ["Total Revenue (EGP)", "=SUM(" + SRC + "!M2:M)"],
+      ["Total Revenue (EGP)", "=SUM(" + SRC + "!N2:N)"],
       ["Total Orders", "=COUNTA(" + SRC + "!A2:A)"],
-      ["Total Loaves Sold", "=SUM(" + SRC + "!L2:L)"],
+      ["Total Loaves Sold", "=SUM(" + SRC + "!M2:M)"],
       ["Average Order Value (EGP)", "=IFERROR(ROUND(B3/B4,2),0)"]
     ]},
 
     { range: DASH + "!A8:B11", values: [
-      ["Plain Sourdough — loaves sold", "=SUM(" + SRC + "!I2:I)"],
-      ["Green Olive Sourdough — loaves sold", "=SUM(" + SRC + "!J2:J)"],
-      ["Black Olive Sourdough — loaves sold", "=SUM(" + SRC + "!K2:K)"],
+      ["Plain Sourdough — loaves sold", "=SUM(" + SRC + "!J2:J)"],
+      ["Green Olive Sourdough — loaves sold", "=SUM(" + SRC + "!K2:K)"],
+      ["Black Olive Sourdough — loaves sold", "=SUM(" + SRC + "!L2:L)"],
       ["Best-Selling Product", '=IF(SUM(B8:B10)=0,"—",INDEX($H$3:$H$5,MATCH(MAX(B8:B10),B8:B10,0)))']
     ]},
 
     { range: DASH + "!A13:B16", values: [
-      ["Revenue Today (EGP)", '=SUMPRODUCT((' + B + '=TEXT(TODAY(),"yyyy-mm-dd"))*' + M + ")"],
-      ["Revenue This Week (EGP)", "=SUMPRODUCT((" + B + ">=" + WEEK_START + ")*" + M + ")"],
-      ["Revenue This Month (EGP)", "=SUMPRODUCT((" + B + ">=" + MONTH_START + ")*" + M + ")"],
+      ["Revenue Today (EGP)", '=SUMPRODUCT((' + B + '=TEXT(TODAY(),"yyyy-mm-dd"))*' + N + ")"],
+      ["Revenue This Week (EGP)", "=SUMPRODUCT((" + B + ">=" + WEEK_START + ")*" + N + ")"],
+      ["Revenue This Month (EGP)", "=SUMPRODUCT((" + B + ">=" + MONTH_START + ")*" + N + ")"],
       ["Orders This Month", "=SUMPRODUCT(--(" + B + ">=" + MONTH_START + "))"]
     ]},
 
     { range: DASH + "!A18:B24", values: [["Orders by status", ""]].concat(
-      STATUSES.map((s, i) => [s, "=COUNTIF(" + SRC + "!$O$2:$O,$A" + (19 + i) + ")"])
+      STATUSES.map((s, i) => [s, "=COUNTIF(" + SRC + "!$P$2:$P,$A" + (19 + i) + ")"])
     )},
 
     /* The feed behind the "Revenue over time" chart. Each formula
@@ -103,7 +104,7 @@ function dashboardValues() {
       ["Date", "Revenue (EGP)", "Orders"],
       [
         '=IFERROR(SORT(UNIQUE(FILTER(' + SRC + "!B2:B," + SRC + '!B2:B<>""))),"")',
-        '=IFERROR(ARRAYFORMULA(SUMIF(' + SRC + "!$B$2:$B,FILTER($D$3:$D,$D$3:$D<>\"\")," + SRC + '!$M$2:$M)),"")',
+        '=IFERROR(ARRAYFORMULA(SUMIF(' + SRC + "!$B$2:$B,FILTER($D$3:$D,$D$3:$D<>\"\")," + SRC + '!$N$2:$N)),"")',
         '=IFERROR(ARRAYFORMULA(COUNTIF(' + SRC + '!$B$2:$B,FILTER($D$3:$D,$D$3:$D<>""))),"")'
       ]
     ]},
@@ -118,6 +119,41 @@ function dashboardValues() {
       ["Plain Sourdough", "=B8", 230, "=I3*J3"],
       ["Green Olive Sourdough", "=B9", 250, "=I4*J4"],
       ["Black Olive Sourdough", "=B10", 250, "=I5*J5"]
+    ]},
+
+    /* —— What to bake, and for when ——————————————————
+       With four days' notice, the question the owners actually ask is
+       not how much they have sold — it is what is going in the oven
+       on Tuesday. This groups every order by its delivery date and
+       gives the three loaf counts and the total for each one.
+
+       Only dates from today onwards, sorted soonest first, and
+       cancelled orders left out, so the next bake is always the top
+       row and the list never grows a tail of deliveries already made.
+
+       QUERY would be shorter. These are deliberately the plain
+       functions the owners can read, and change, themselves. */
+    { range: DASH + "!A29", values: [["What to bake, by delivery date"]] },
+    { range: DASH + "!A30:D31", values: [
+      ["Delivery date", "Plain", "Green Olive", "Black Olive"],
+      [
+        '=IFERROR(SORT(UNIQUE(FILTER(' + SRC + "!D2:D," + SRC + '!D2:D<>"",' + SRC +
+          '!D2:D>=TEXT(TODAY(),"yyyy-mm-dd"),' + SRC + '!P2:P<>"Cancelled"))),"")',
+        '=IFERROR(ARRAYFORMULA(SUMIF(' + SRC + '!$D$2:$D,FILTER($A$31:$A,$A$31:$A<>""),' + SRC + '!$J$2:$J)),"")',
+        '=IFERROR(ARRAYFORMULA(SUMIF(' + SRC + '!$D$2:$D,FILTER($A$31:$A,$A$31:$A<>""),' + SRC + '!$K$2:$K)),"")',
+        '=IFERROR(ARRAYFORMULA(SUMIF(' + SRC + '!$D$2:$D,FILTER($A$31:$A,$A$31:$A<>""),' + SRC + '!$L$2:$L)),"")'
+      ]
+    ]},
+    { range: DASH + "!E30:E31", values: [
+      ["Total loaves"],
+      ['=IFERROR(ARRAYFORMULA(SUMIF(' + SRC + '!$D$2:$D,FILTER($A$31:$A,$A$31:$A<>""),' + SRC + '!$M$2:$M)),"")']
+    ]},
+
+    /* The next bake on its own, at the top of the tab — the one
+       figure worth seeing without scrolling or reading a table. */
+    { range: DASH + "!A26:B27", values: [
+      ["Next delivery date", '=IFERROR(IF($A$31="","\u2014",$A$31),"\u2014")'],
+      ["Loaves to bake for it", '=IFERROR(IF($A$31="",0,$E$31),0)']
     ]}
   ];
 }
@@ -132,7 +168,7 @@ function formatRequests(ordersId, dashId, existingCharts) {
     fields: "gridProperties.frozenRowCount"
   }});
   req.push({ repeatCell: {
-    range: { sheetId: ordersId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 15 },
+    range: { sheetId: ordersId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 16 },
     cell: { userEnteredFormat: {
       backgroundColor: PAPER,
       textFormat: { bold: true, foregroundColor: INK },
@@ -144,7 +180,18 @@ function formatRequests(ordersId, dashId, existingCharts) {
   /* Mobile numbers are plain text, so neither the API nor a later edit
      by hand can turn 01012345678 into 1012345678. */
   req.push({ repeatCell: {
-    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 4, endColumnIndex: 5 },
+    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 5, endColumnIndex: 6 },
+    cell: { userEnteredFormat: { numberFormat: { type: "TEXT" } } },
+    fields: "userEnteredFormat.numberFormat"
+  }});
+
+  /* The three date columns likewise. They are written as ISO text so
+     they stay readable and still sort chronologically, and every
+     Dashboard formula compares them as text — a column Sheets had
+     quietly converted to its own date serials would match none of
+     them. */
+  req.push({ repeatCell: {
+    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 1, endColumnIndex: 4 },
     cell: { userEnteredFormat: { numberFormat: { type: "TEXT" } } },
     fields: "userEnteredFormat.numberFormat"
   }});
@@ -152,25 +199,25 @@ function formatRequests(ordersId, dashId, existingCharts) {
   /* Revenue reads as money without a currency symbol fighting the
      column of plain loaf counts beside it. */
   req.push({ repeatCell: {
-    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 12, endColumnIndex: 13 },
+    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 13, endColumnIndex: 14 },
     cell: { userEnteredFormat: { numberFormat: { type: "NUMBER", pattern: "#,##0" } } },
     fields: "userEnteredFormat.numberFormat"
   }});
 
   /* Address and Notes hold sentences; everything else holds a word. */
   req.push({ updateDimensionProperties: {
-    range: { sheetId: ordersId, dimension: "COLUMNS", startIndex: 6, endIndex: 7 },
+    range: { sheetId: ordersId, dimension: "COLUMNS", startIndex: 7, endIndex: 8 },
     properties: { pixelSize: 260 }, fields: "pixelSize"
   }});
   req.push({ updateDimensionProperties: {
-    range: { sheetId: ordersId, dimension: "COLUMNS", startIndex: 13, endIndex: 14 },
+    range: { sheetId: ordersId, dimension: "COLUMNS", startIndex: 14, endIndex: 15 },
     properties: { pixelSize: 220 }, fields: "pixelSize"
   }});
 
   /* The editable status. An unbounded range means every future row
      inherits the dropdown the moment it is appended. */
   req.push({ setDataValidation: {
-    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 14, endColumnIndex: 15 },
+    range: { sheetId: ordersId, startRowIndex: 1, startColumnIndex: 15, endColumnIndex: 16 },
     rule: {
       condition: { type: "ONE_OF_LIST", values: STATUSES.map(s => ({ userEnteredValue: s })) },
       strict: true,
@@ -185,7 +232,7 @@ function formatRequests(ordersId, dashId, existingCharts) {
     fields: "userEnteredFormat.textFormat"
   }});
   req.push({ repeatCell: {
-    range: { sheetId: dashId, startRowIndex: 2, endRowIndex: 24, startColumnIndex: 0, endColumnIndex: 1 },
+    range: { sheetId: dashId, startRowIndex: 2, endRowIndex: 30, startColumnIndex: 0, endColumnIndex: 1 },
     cell: { userEnteredFormat: { textFormat: { bold: true } } },
     fields: "userEnteredFormat.textFormat"
   }});

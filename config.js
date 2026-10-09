@@ -11,11 +11,45 @@ window.COZY_CONFIG = {
   instagram: "thecozyloaf_eg",
 
   /* ── Ordering rules ──────────────────────────────────────────
-     Customers do not pick a date. Every order is delivered within
-     this window, and the site says so wherever it matters. */
-  deliveryPromise: "Your order will be delivered within 48 hours.",
+     Shown at the top of the checkout and again on the confirmation
+     page, so it needs to read sensibly in both places. */
+  deliveryPromise: "Every loaf is baked to order, so we ask for 4 days' notice.",
   deliveryFeeNote: "Delivery fee will be confirmed separately.",
   maxPerLoaf: 20,
+
+  /* ── Delivery dates ─────────────────────────
+     The customer picks a delivery date at checkout, and the bakery
+     counts the day the order comes in as day one. Four days' notice
+     therefore means the earliest delivery is three calendar days
+     after today: order on Saturday, deliver on Tuesday.
+
+     Today always means today in Cairo, never on the customer's own
+     device. Someone ordering from London late in the evening is
+     already on tomorrow's date at the bakery, and reading the date
+     off their phone would quietly offer them a day the bakery
+     cannot make. */
+  noticeDays: 4,
+
+  /* How far ahead the calendar will go, so it is not an endless
+     scroll into next year. */
+  maxDaysAhead: 60,
+
+  /* ── Days the bakery is not delivering ──────────────
+     Add a date here and the calendar will not accept it, even when
+     it clears the four days' notice. Write them as "YYYY-MM-DD",
+     one per line, in any order.
+
+     This is the only list to edit. The checkout reads it, and so
+     does the server that writes the order sheet, so a date blocked
+     here is blocked in both places. Nothing else needs changing.
+
+         unavailableDeliveryDates: [
+           "2026-12-25",
+           "2027-01-01"
+         ],
+  */
+  unavailableDeliveryDates: [
+  ],
 
   /* ── Delivery areas ──────────────────────────────────────────
      The checkout dropdown, grouped by part of the city so a long

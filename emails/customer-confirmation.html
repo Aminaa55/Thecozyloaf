@@ -15,7 +15,7 @@
   Paste this whole file into the EmailJS template editor, in Code view.
 
   Merge fields:
-    {{first_name}} {{order_number}} {{items_text}} {{subtotal}}
+    {{first_name}} {{order_number}} {{items_text}} {{subtotal}} {{delivery_date}}
 
   {{items_text}} arrives as plain text, one loaf per line:
     2 × Plain Sourdough  —  EGP 460
@@ -81,8 +81,8 @@
           <td align="right" style="padding:12px 0 4px;font-weight:bold;">EGP {{subtotal}}</td>
         </tr>
         <tr>
-          <td style="padding:4px 0;color:#9E5A32;">Delivery</td>
-          <td align="right" style="padding:4px 0;font-weight:bold;">Within 48 hours</td>
+          <td style="padding:4px 0;color:#9E5A32;">Delivery date</td>
+          <td align="right" style="padding:4px 0;font-weight:bold;">{{delivery_date}}</td>
         </tr>
         <tr>
           <td style="padding:4px 0;color:#9E5A32;">Delivery fee</td>
