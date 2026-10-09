@@ -65,7 +65,7 @@ window.COZY_CONFIG = {
   /* ── Products ──────────────────────────────────────────────── */
   products: {
     plain: { name: "Plain Sourdough", price: 230 },
-    olive: { name: "Olive Sourdough", price: 250 },
+    olive: { name: "Green Olive Sourdough", price: 250 },
     blackOlive: { name: "Black Olive Sourdough", price: 250 }
   },
 

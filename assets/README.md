@@ -48,7 +48,7 @@ the gold background.
 
 Both are set in `index.html` on `.loafcard img` and `.frame img`.
 
-## Olive Sourdough
+## Green Olive Sourdough
 
 `olive-sourdough.jpg` — its own photograph, shot on the same near-black ground,
 so it sits in the same frame treatment as the Plain loaf. It has never borrowed

@@ -225,7 +225,7 @@ upload them straight from GitHub.
 
 ## Still needed
 
-Olive Sourdough description · the logo file · storage/care wording if that
+Green Olive Sourdough description · the logo file · storage/care wording if that
 section should return.
 
 ## The visual system
